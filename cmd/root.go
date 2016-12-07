@@ -1,17 +1,3 @@
-// Copyright © 2016 Craig Monson
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package cmd
 
 import (
@@ -19,9 +5,12 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
+	"github.com/craigmonson/colonize/config"
 )
 
-var environment string
+var Environment string
+var Config *config.ColonizeConfig
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -53,7 +42,7 @@ func init() {
 	// will be global for your application.
 
 	RootCmd.PersistentFlags().StringVarP(
-		&environment,
+		&Environment,
 		"environment",
 		"e",
 		"",
@@ -61,4 +50,13 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	cwd, err := os.Getwd()
+	if err != nil {
+		panic("Failed to find CWD: " + err.Error())
+	}
+
+	Config, err = config.LoadConfigInTree(cwd)
+	if err != nil {
+		panic("Failed to load config: " + err.Error())
+	}
 }
