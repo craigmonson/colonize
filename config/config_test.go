@@ -50,6 +50,8 @@ var _ = Describe("Config/Config", func() {
 				"Combined_Vals_File":        "_combined.tfvars",
 				"Combined_Vars_File":        "_combined_variables.tf",
 				"Combined_Tf_File":          "_combined.tf",
+				"Derived_Vars_File":         "_derived_variables.tf",
+				"Variable_Tf_File":          "variables.tf",
 				"Vals_File_Env_Post_String": ".tfvars",
 				"Vars_File_Env_Post_String": "_variables.tf",
 				"Templates_Dir":             "env",
@@ -120,6 +122,11 @@ var _ = Describe("Config/Config", func() {
 				It("should set CombinedTfFilePath", func() {
 					expected := "../test/foo/bar/_combined.tf"
 					Ω(conf.CombinedTfFilePath).To(Equal(expected))
+				})
+
+				It("should set DerivedVariablesFilePath", func() {
+					expected := "../test/foo/bar/_derived_variables.tf"
+					Ω(conf.DerivedVariablesFilePath).To(Equal(expected))
 				})
 			})
 		})

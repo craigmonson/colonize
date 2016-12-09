@@ -1,7 +1,6 @@
 package prep
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"regexp"
@@ -64,7 +63,6 @@ func findTfFilesToCombine(dirPaths []string) []string {
 		for _, fPath := range fList {
 			fullPath := util.PathJoin(path, fPath.Name())
 			if isValidTfFile(fullPath) {
-				fmt.Println("IS VALID: " + fullPath)
 				combineable = append(combineable, fullPath)
 			}
 		}
