@@ -7,12 +7,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// Find the main config file: .colonize.yaml will ALWAYS be in the root of the
-// project.
-const (
-	valsFileExt = ".tfvars"
-)
-
 type ColonizeConfig struct {
 	// Inputs
 	Environment string
@@ -27,6 +21,10 @@ type ColonizeConfig struct {
 	WalkablePaths        []string
 	WalkableValPaths     []string
 	CombinedValsFilePath string
+	WalkableVarPaths     []string
+	CombinedVarsFilePath string
+	WalkableTfPaths      []string
+	CombinedTfFilePath   string
 
 	// Read in from config
 	Autogenerate_Comment      string
@@ -97,7 +95,18 @@ func LoadConfigInTree(path string, env string) (*ColonizeConfig, error) {
 }
 
 func (c *ColonizeConfig) GetEnvValPath() string {
-	return util.PathJoin(c.Environments_Dir, c.Environment+valsFileExt)
+	return util.PathJoin(
+		c.Environments_Dir,
+		c.Environment+c.Vals_File_Env_Post_String,
+	)
+}
+
+func (c *ColonizeConfig) GetEnvVarPath() string {
+	return util.PathJoin(c.Environments_Dir, "variables.tf")
+}
+
+func (c *ColonizeConfig) GetEnvTfPath() string {
+	return c.Environments_Dir
 }
 
 func (c *ColonizeConfig) initialize() {
@@ -114,4 +123,16 @@ func (c *ColonizeConfig) initialize() {
 		c.GetEnvValPath(),
 	)
 	c.CombinedValsFilePath = util.PathJoin(c.OriginPath, c.Combined_Vals_File)
+
+	c.WalkableVarPaths = util.AppendPathToPaths(
+		c.WalkablePaths,
+		c.GetEnvVarPath(),
+	)
+	c.CombinedVarsFilePath = util.PathJoin(c.OriginPath, c.Combined_Vars_File)
+
+	c.WalkableTfPaths = util.AppendPathToPaths(
+		c.WalkablePaths,
+		c.GetEnvTfPath(),
+	)
+	c.CombinedTfFilePath = util.PathJoin(c.OriginPath, c.Combined_Tf_File)
 }

@@ -50,10 +50,10 @@ var _ = Describe("Config/Config", func() {
 				"Combined_Vals_File":        "_combined.tfvars",
 				"Combined_Vars_File":        "_combined_variables.tf",
 				"Combined_Tf_File":          "_combined.tf",
+				"Vals_File_Env_Post_String": ".tfvars",
 				"Vars_File_Env_Post_String": "_variables.tf",
-				"Vals_File_Env_Post_String": ".tf",
-				"Templates_Dir":             "config",
-				"Environments_Dir":          "config",
+				"Templates_Dir":             "env",
+				"Environments_Dir":          "env",
 			}
 
 			for k := range attributes {
@@ -82,9 +82,9 @@ var _ = Describe("Config/Config", func() {
 
 				It("should set WalkableValPaths", func() {
 					res := []string{
-						"../test/config/dev.tfvars",
-						"../test/foo/config/dev.tfvars",
-						"../test/foo/bar/config/dev.tfvars",
+						"../test/env/dev.tfvars",
+						"../test/foo/env/dev.tfvars",
+						"../test/foo/bar/env/dev.tfvars",
 					}
 					Ω(conf.WalkableValPaths).To(Equal(res))
 				})
@@ -93,13 +93,40 @@ var _ = Describe("Config/Config", func() {
 					expected := "../test/foo/bar/_combined.tfvars"
 					Ω(conf.CombinedValsFilePath).To(Equal(expected))
 				})
+
+				It("should set WalkableVarPaths", func() {
+					res := []string{
+						"../test/env/variables.tf",
+						"../test/foo/env/variables.tf",
+						"../test/foo/bar/env/variables.tf",
+					}
+					Ω(conf.WalkableVarPaths).To(Equal(res))
+				})
+
+				It("should set CombinedVarsFilePath", func() {
+					expected := "../test/foo/bar/_combined_variables.tf"
+					Ω(conf.CombinedVarsFilePath).To(Equal(expected))
+				})
+
+				It("should set WalkableTfPaths", func() {
+					res := []string{
+						"../test/env",
+						"../test/foo/env",
+						"../test/foo/bar/env",
+					}
+					Ω(conf.WalkableTfPaths).To(Equal(res))
+				})
+
+				It("should set CombinedTfFilePath", func() {
+					expected := "../test/foo/bar/_combined.tf"
+					Ω(conf.CombinedTfFilePath).To(Equal(expected))
+				})
 			})
 		})
-
 	})
 
 	Describe("LoadConfigInTree", func() {
-		Context("given a path (tree) to search for the config", func() {
+		Context("given a path (tree) to search for the env", func() {
 			path := "../test"
 			conf, err := LoadConfigInTree(path, environment)
 
@@ -115,9 +142,23 @@ var _ = Describe("Config/Config", func() {
 	})
 
 	Describe("GetEnvValPath", func() {
-		It("should return the environment val file path in the config", func() {
+		It("should return the environment val file path in the env", func() {
 			c, _ := LoadConfigInTree("../test/vpc", environment)
-			Ω(c.GetEnvValPath()).To(Equal("config/dev.tfvars"))
+			Ω(c.GetEnvValPath()).To(Equal("env/dev.tfvars"))
+		})
+	})
+
+	Describe("GetEnvVarPath", func() {
+		It("should return the environment var file path in the env", func() {
+			c, _ := LoadConfigInTree("../test/vpc", environment)
+			Ω(c.GetEnvVarPath()).To(Equal("env/variables.tf"))
+		})
+	})
+
+	Describe("GetEnvTfPath", func() {
+		It("should return the environment tf file path in the env", func() {
+			c, _ := LoadConfigInTree("../test/vpc", environment)
+			Ω(c.GetEnvTfPath()).To(Equal("env"))
 		})
 	})
 })

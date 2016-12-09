@@ -2,7 +2,7 @@ package prep_test
 
 import (
 	"io/ioutil"
-	"os"
+	//"os"
 
 	"github.com/craigmonson/colonize/config"
 	. "github.com/craigmonson/colonize/prep"
@@ -20,7 +20,9 @@ var _ = Describe("Prep", func() {
 	})
 	AfterEach(func() {
 		// remove files.
-		_ = os.Remove(conf.CombinedValsFilePath)
+		//_ = os.Remove(conf.CombinedValsFilePath)
+		//_ = os.Remove(conf.CombinedVarsFilePath)
+		//_ = os.Remove(conf.CombinedTfFilePath)
 	})
 
 	PDescribe("Run", func() {})
@@ -30,7 +32,7 @@ var _ = Describe("Prep", func() {
 			err = BuildCombinedValuesFile(conf)
 		})
 
-		It("should create the combined values file", func() {
+		It("should create the combined file", func() {
 			Ω(conf.CombinedValsFilePath).To(BeARegularFile())
 		})
 
@@ -40,4 +42,37 @@ var _ = Describe("Prep", func() {
 			Ω(string(contents)).To(Equal(expected))
 		})
 	})
+
+	Describe("BuildCombinedVarsFile", func() {
+		BeforeEach(func() {
+			err = BuildCombinedVarsFile(conf)
+		})
+
+		It("should create the combined file", func() {
+			Ω(conf.CombinedVarsFilePath).To(BeARegularFile())
+		})
+
+		It("should have the right contents", func() {
+			contents, _ := ioutil.ReadFile(conf.CombinedVarsFilePath)
+			expected := "variable \"root_var\" {}\nvariable \"vpc_var\" {}\n"
+			Ω(string(contents)).To(Equal(expected))
+		})
+	})
+
+	Describe("BuildCombinedTfFile", func() {
+		BeforeEach(func() {
+			err = BuildCombinedTfFile(conf)
+		})
+
+		It("should create the combined file", func() {
+			Ω(conf.CombinedTfFilePath).To(BeARegularFile())
+		})
+
+		It("should have the right contents", func() {
+			contents, _ := ioutil.ReadFile(conf.CombinedTfFilePath)
+			expected := "provider \"aws\" {}\nvariable \"vpc_tf_test\" {}\n"
+			Ω(string(contents)).To(Equal(expected))
+		})
+	})
+
 })
