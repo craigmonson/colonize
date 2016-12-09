@@ -25,20 +25,21 @@ type ColonizeConfig struct {
 	CombinedVarsFilePath     string
 	WalkableTfPaths          []string
 	CombinedTfFilePath       string
-	DerivedVariablesFilePath string
+	WalkableDerivedFilePaths []string
+	CombinedDerivedFilePath  string
 
 	// Read in from config
-	Autogenerate_Comment string
-	Combined_Vals_File   string
-	Combined_Vars_File   string
-	Combined_Tf_File     string
-	Derived_Vars_File    string
-	Variable_Tf_File     string
-
-	Vars_File_Env_Post_String string
-	Vals_File_Env_Post_String string
 	Templates_Dir             string
 	Environments_Dir          string
+	Autogenerate_Comment      string
+	Combined_Vals_File        string
+	Combined_Vars_File        string
+	Combined_Tf_File          string
+	Combined_Derived_File     string
+	Variable_Tf_File          string
+	Derived_Vals_File         string
+	Vars_File_Env_Post_String string
+	Vals_File_Env_Post_String string
 }
 
 type LoadConfigInput struct {
@@ -113,6 +114,10 @@ func (c *ColonizeConfig) GetEnvTfPath() string {
 	return c.Environments_Dir
 }
 
+func (c *ColonizeConfig) GetEnvDerivedPath() string {
+	return util.PathJoin(c.Environments_Dir, c.Derived_Vals_File)
+}
+
 func (c *ColonizeConfig) initialize() {
 	c.TmplRelPaths = util.GetTreePaths(c.TmplPath)
 
@@ -140,5 +145,9 @@ func (c *ColonizeConfig) initialize() {
 	)
 	c.CombinedTfFilePath = util.PathJoin(c.OriginPath, c.Combined_Tf_File)
 
-	c.DerivedVariablesFilePath = util.PathJoin(c.OriginPath, c.Derived_Vars_File)
+	c.WalkableDerivedFilePaths = util.AppendPathToPaths(
+		c.WalkablePaths,
+		c.GetEnvDerivedPath(),
+	)
+	c.CombinedDerivedFilePath = util.PathJoin(c.OriginPath, c.Combined_Derived_File)
 }

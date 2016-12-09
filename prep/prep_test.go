@@ -75,4 +75,19 @@ var _ = Describe("Prep", func() {
 		})
 	})
 
+	Describe("BuildCombinedDerivedFile", func() {
+		BeforeEach(func() {
+			err = BuildCombinedDerivedFile(conf)
+		})
+
+		It("should create the combined file", func() {
+			Ω(conf.CombinedDerivedFilePath).To(BeARegularFile())
+		})
+
+		It("should have the right contents", func() {
+			contents, _ := ioutil.ReadFile(conf.CombinedDerivedFilePath)
+			expected := "provider \"aws\" {}\nvariable \"vpc_tf_test\" {}\n"
+			Ω(string(contents)).To(Equal(expected))
+		})
+	})
 })
