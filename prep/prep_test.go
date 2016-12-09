@@ -2,7 +2,7 @@ package prep_test
 
 import (
 	"io/ioutil"
-	//"os"
+	"os"
 
 	"github.com/craigmonson/colonize/config"
 	. "github.com/craigmonson/colonize/prep"
@@ -22,7 +22,8 @@ var _ = Describe("Prep", func() {
 		// remove files.
 		//_ = os.Remove(conf.CombinedValsFilePath)
 		//_ = os.Remove(conf.CombinedVarsFilePath)
-		//_ = os.Remove(conf.CombinedTfFilePath)
+		_ = os.Remove(conf.CombinedTfFilePath)
+		//_ = os.Remove(conf.CombinedDerivedFilePath)
 	})
 
 	PDescribe("Run", func() {})
@@ -36,9 +37,17 @@ var _ = Describe("Prep", func() {
 			Ω(conf.CombinedValsFilePath).To(BeARegularFile())
 		})
 
-		It("should have the right contents", func() {
+		It("should have the right contents (derived too)", func() {
 			contents, _ := ioutil.ReadFile(conf.CombinedValsFilePath)
-			expected := "root_var = \"dev_root_var\"\nvpc_var = \"dev_vpc_var\"\n"
+			expected := `environment = "dev"
+origin_path = "../test/vpc"
+tmpl_name = "vpc"
+tmpl_path_dashed = "vpc"
+tmpl_path_underscored = "vpc"
+root_path = "../test"
+root_var = "dev_root_var"
+vpc_var = "dev_vpc_var"
+`
 			Ω(string(contents)).To(Equal(expected))
 		})
 	})
@@ -52,9 +61,17 @@ var _ = Describe("Prep", func() {
 			Ω(conf.CombinedVarsFilePath).To(BeARegularFile())
 		})
 
-		It("should have the right contents", func() {
+		It("should have the right contents (derived too)", func() {
 			contents, _ := ioutil.ReadFile(conf.CombinedVarsFilePath)
-			expected := "variable \"root_var\" {}\nvariable \"vpc_var\" {}\n"
+			expected := `variable "environment" {}
+variable "origin_path" {}
+variable "tmpl_name" {}
+variable "tmpl_path_dashed" {}
+variable "tmpl_path_underscored" {}
+variable "root_path" {}
+variable "root_var" {}
+variable "vpc_var" {}
+`
 			Ω(string(contents)).To(Equal(expected))
 		})
 	})
@@ -86,7 +103,7 @@ var _ = Describe("Prep", func() {
 
 		It("should have the right contents", func() {
 			contents, _ := ioutil.ReadFile(conf.CombinedDerivedFilePath)
-			expected := "provider \"aws\" {}\nvariable \"vpc_tf_test\" {}\n"
+			expected := "test_derived = \"foo-dev-bar-vpc\"\n"
 			Ω(string(contents)).To(Equal(expected))
 		})
 	})

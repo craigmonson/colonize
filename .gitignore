@@ -28,3 +28,6 @@ _testmain.go
 
 # golang
 *.coverprofile
+
+# testing files
+_combined*

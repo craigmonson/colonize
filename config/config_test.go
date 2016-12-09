@@ -53,7 +53,7 @@ var _ = Describe("Config/Config", func() {
 				"Combined_Vars_File":        "_combined_variables.tf",
 				"Combined_Tf_File":          "_combined.tf",
 				"Combined_Derived_File":     "_combined_derived.tf",
-				"Derived_Vals_File":         "derived.tfvars",
+				"Derived_File":              "derived.tfvars",
 				"Variable_Tf_File":          "variables.tf",
 				"Vals_File_Env_Post_String": ".tfvars",
 				"Vars_File_Env_Post_String": "_variables.tf",
@@ -131,7 +131,7 @@ var _ = Describe("Config/Config", func() {
 						"../test/foo/env/derived.tfvars",
 						"../test/foo/bar/env/derived.tfvars",
 					}
-					Ω(conf.WalkableDerivedFilePaths).To(Equal(res))
+					Ω(conf.WalkableDerivedPaths).To(Equal(res))
 				})
 
 				It("should set CombinedDerivedFilePath", func() {

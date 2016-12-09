@@ -17,16 +17,16 @@ type ColonizeConfig struct {
 	RootPath    string
 
 	// Generated
-	TmplRelPaths             []string
-	WalkablePaths            []string
-	WalkableValPaths         []string
-	CombinedValsFilePath     string
-	WalkableVarPaths         []string
-	CombinedVarsFilePath     string
-	WalkableTfPaths          []string
-	CombinedTfFilePath       string
-	WalkableDerivedFilePaths []string
-	CombinedDerivedFilePath  string
+	TmplRelPaths            []string
+	WalkablePaths           []string
+	WalkableValPaths        []string
+	CombinedValsFilePath    string
+	WalkableVarPaths        []string
+	CombinedVarsFilePath    string
+	WalkableTfPaths         []string
+	CombinedTfFilePath      string
+	WalkableDerivedPaths    []string
+	CombinedDerivedFilePath string
 
 	// Read in from config
 	Templates_Dir             string
@@ -34,10 +34,10 @@ type ColonizeConfig struct {
 	Autogenerate_Comment      string
 	Combined_Vals_File        string
 	Combined_Vars_File        string
-	Combined_Tf_File          string
 	Combined_Derived_File     string
+	Combined_Tf_File          string
+	Derived_File              string
 	Variable_Tf_File          string
-	Derived_Vals_File         string
 	Vars_File_Env_Post_String string
 	Vals_File_Env_Post_String string
 }
@@ -115,7 +115,7 @@ func (c *ColonizeConfig) GetEnvTfPath() string {
 }
 
 func (c *ColonizeConfig) GetEnvDerivedPath() string {
-	return util.PathJoin(c.Environments_Dir, c.Derived_Vals_File)
+	return util.PathJoin(c.Environments_Dir, c.Derived_File)
 }
 
 func (c *ColonizeConfig) initialize() {
@@ -145,7 +145,7 @@ func (c *ColonizeConfig) initialize() {
 	)
 	c.CombinedTfFilePath = util.PathJoin(c.OriginPath, c.Combined_Tf_File)
 
-	c.WalkableDerivedFilePaths = util.AppendPathToPaths(
+	c.WalkableDerivedPaths = util.AppendPathToPaths(
 		c.WalkablePaths,
 		c.GetEnvDerivedPath(),
 	)
