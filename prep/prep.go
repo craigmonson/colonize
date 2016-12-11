@@ -145,7 +145,9 @@ func getConfigAsValues(c *config.ColonizeConfig) []byte {
 }
 
 // we're returning a slice because we want the lists to stay in order when
-// we print it out... with a map, there's no guarantee of order.
+// we print it out... with a map, there's no guarantee of order.  There's no
+// functional need to do this for terraform et al... just trying to keep it
+// nice for the user.
 func getDerivedVarList(c *config.ColonizeConfig) [][2]string {
 	return [][2]string{
 		[2]string{"environment", c.Environment},
@@ -169,7 +171,7 @@ func getVariableMap(c *config.ColonizeConfig) map[string]string {
 	varMap := map[string]string{}
 	content, _ := ioutil.ReadFile(c.CombinedValsFilePath)
 	for _, line := range strings.Split(string(content), "\n") {
-		// skip if the line doesn't match
+		// skip if the line doesn't match blah = "blah"
 		if matched, _ := regexp.MatchString("^.*=.*\".*\"$", line); !matched {
 			continue
 		}
@@ -178,9 +180,10 @@ func getVariableMap(c *config.ColonizeConfig) map[string]string {
 		if len(KV) != 2 {
 			continue
 		}
+		// clean it up...
 		key := strings.TrimSpace(KV[0])
 		val := strings.TrimSpace(KV[1])
-		// remove first and last double quotes
+		// remove first and last double quotes from the value
 		val = strings.TrimSuffix(strings.TrimPrefix(val, `"`), `"`)
 		varMap[key] = val
 	}
