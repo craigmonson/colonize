@@ -92,18 +92,28 @@ variable "vpc_var" {}
 		})
 	})
 
-	Describe("BuildCombinedDerivedFile", func() {
+	Describe("BuildCombinedDerivedFiles", func() {
 		BeforeEach(func() {
-			err = BuildCombinedDerivedFile(conf)
+			err = BuildCombinedDerivedFiles(conf)
 		})
 
-		It("should create the combined file", func() {
-			Ω(conf.CombinedDerivedFilePath).To(BeARegularFile())
+		It("should create the combined val file", func() {
+			Ω(conf.CombinedDerivedValsFilePath).To(BeARegularFile())
 		})
 
-		It("should have the right contents", func() {
-			contents, _ := ioutil.ReadFile(conf.CombinedDerivedFilePath)
+		It("should create the combined var file", func() {
+			Ω(conf.CombinedDerivedVarsFilePath).To(BeARegularFile())
+		})
+
+		It("should have the right val contents", func() {
+			contents, _ := ioutil.ReadFile(conf.CombinedDerivedValsFilePath)
 			expected := "test_derived = \"foo-dev-bar-vpc\"\n"
+			Ω(string(contents)).To(Equal(expected))
+		})
+
+		It("should have the right var contents", func() {
+			contents, _ := ioutil.ReadFile(conf.CombinedDerivedVarsFilePath)
+			expected := "variable \"test_derived\" {}\n"
 			Ω(string(contents)).To(Equal(expected))
 		})
 	})

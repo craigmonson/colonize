@@ -29,7 +29,7 @@ func Run(c *config.ColonizeConfig) error {
 		return err
 	}
 
-	err = BuildCombinedDerivedFile(c)
+	err = BuildCombinedDerivedFiles(c)
 	if err != nil {
 		return err
 	}
@@ -70,14 +70,18 @@ func BuildCombinedTfFile(c *config.ColonizeConfig) error {
 	return writeCombinedFile(c.CombinedTfFilePath, combined)
 }
 
-func BuildCombinedDerivedFile(c *config.ColonizeConfig) error {
+func BuildCombinedDerivedFiles(c *config.ColonizeConfig) error {
 	combined, err := combineFiles(c.WalkableDerivedPaths)
 	if err != nil {
 		return err
 	}
-	//complete := append(getDerivedFromConfig(c), combined...)
 	substituted := subDerivedWithVariables(c, combined)
-	return writeCombinedFile(c.CombinedDerivedFilePath, substituted)
+	err = writeCombinedFile(c.CombinedDerivedValsFilePath, substituted)
+	if err != nil {
+		return err
+	}
+	derVars := getDerivedAsVariables(c)
+	return writeCombinedFile(c.CombinedDerivedVarsFilePath, derVars)
 }
 
 func findTfFilesToCombine(dirPaths []string, vFile, dFile string) []string {
@@ -125,18 +129,12 @@ func writeCombinedFile(path string, content []byte) error {
 }
 
 func getConfigAsVariables(c *config.ColonizeConfig) []byte {
-	output := ""
-	for _, ary := range getDerivedVarList(c) {
-		// variable "foo" {}"
-		output = output + "variable \"" + ary[0] + "\" {}\n"
-	}
-
-	return []byte(output)
+	return getListAsVariables(getConfDerivedVarList(c))
 }
 
 func getConfigAsValues(c *config.ColonizeConfig) []byte {
 	output := ""
-	for _, ary := range getDerivedVarList(c) {
+	for _, ary := range getConfDerivedVarList(c) {
 		// foo = "bar"
 		output = output + ary[0] + " = \"" + ary[1] + "\"\n"
 	}
@@ -144,11 +142,38 @@ func getConfigAsValues(c *config.ColonizeConfig) []byte {
 	return []byte(output)
 }
 
+func getDerivedAsVariables(c *config.ColonizeConfig) []byte {
+	combined, err := combineFiles(c.WalkableDerivedPaths)
+	if err != nil {
+		panic(err)
+	}
+	derList := getDerivedVarList(combined)
+	return getListAsVariables(derList)
+}
+
+func getListAsVariables(varList [][2]string) []byte {
+	output := ""
+	for _, ary := range varList {
+		// variable "foo" {}
+		output = output + "variable \"" + ary[0] + "\" {}\n"
+	}
+
+	return []byte(output)
+}
+
+func getDerivedVarList(content []byte) [][2]string {
+	output := [][2]string{}
+	for k, v := range getVariableMap(content) {
+		output = append(output, [2]string{k, v})
+	}
+	return output
+}
+
 // we're returning a slice because we want the lists to stay in order when
 // we print it out... with a map, there's no guarantee of order.  There's no
 // functional need to do this for terraform et al... just trying to keep it
 // nice for the user.
-func getDerivedVarList(c *config.ColonizeConfig) [][2]string {
+func getConfDerivedVarList(c *config.ColonizeConfig) [][2]string {
 	return [][2]string{
 		[2]string{"environment", c.Environment},
 		[2]string{"origin_path", c.OriginPath},
@@ -160,16 +185,16 @@ func getDerivedVarList(c *config.ColonizeConfig) [][2]string {
 }
 
 func subDerivedWithVariables(c *config.ColonizeConfig, derived []byte) []byte {
-	for k, v := range getVariableMap(c) {
+	content, _ := ioutil.ReadFile(c.CombinedValsFilePath)
+	for k, v := range getVariableMap(content) {
 		derived = bytes.Replace(derived, []byte("${var."+k+"}"), []byte(v), -1)
 	}
 
 	return derived
 }
 
-func getVariableMap(c *config.ColonizeConfig) map[string]string {
+func getVariableMap(content []byte) map[string]string {
 	varMap := map[string]string{}
-	content, _ := ioutil.ReadFile(c.CombinedValsFilePath)
 	for _, line := range strings.Split(string(content), "\n") {
 		// skip if the line doesn't match blah = "blah"
 		if matched, _ := regexp.MatchString("^.*=.*\".*\"$", line); !matched {

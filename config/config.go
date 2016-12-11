@@ -17,29 +17,31 @@ type ColonizeConfig struct {
 	RootPath    string
 
 	// Generated
-	TmplRelPaths            []string
-	WalkablePaths           []string
-	WalkableValPaths        []string
-	CombinedValsFilePath    string
-	WalkableVarPaths        []string
-	CombinedVarsFilePath    string
-	WalkableTfPaths         []string
-	CombinedTfFilePath      string
-	WalkableDerivedPaths    []string
-	CombinedDerivedFilePath string
+	TmplRelPaths                []string
+	WalkablePaths               []string
+	WalkableValPaths            []string
+	CombinedValsFilePath        string
+	WalkableVarPaths            []string
+	CombinedVarsFilePath        string
+	WalkableTfPaths             []string
+	CombinedTfFilePath          string
+	WalkableDerivedPaths        []string
+	CombinedDerivedValsFilePath string
+	CombinedDerivedVarsFilePath string
 
 	// Read in from config
-	Templates_Dir             string
-	Environments_Dir          string
-	Autogenerate_Comment      string
-	Combined_Vals_File        string
-	Combined_Vars_File        string
-	Combined_Derived_File     string
-	Combined_Tf_File          string
-	Derived_File              string
-	Variable_Tf_File          string
-	Vars_File_Env_Post_String string
-	Vals_File_Env_Post_String string
+	Templates_Dir              string
+	Environments_Dir           string
+	Autogenerate_Comment       string
+	Combined_Vals_File         string
+	Combined_Vars_File         string
+	Combined_Derived_Vars_File string
+	Combined_Derived_Vals_File string
+	Combined_Tf_File           string
+	Derived_File               string
+	Variable_Tf_File           string
+	Vars_File_Env_Post_String  string
+	Vals_File_Env_Post_String  string
 }
 
 type LoadConfigInput struct {
@@ -149,5 +151,6 @@ func (c *ColonizeConfig) initialize() {
 		c.WalkablePaths,
 		c.GetEnvDerivedPath(),
 	)
-	c.CombinedDerivedFilePath = util.PathJoin(c.OriginPath, c.Combined_Derived_File)
+	c.CombinedDerivedValsFilePath = util.PathJoin(c.OriginPath, c.Combined_Derived_Vals_File)
+	c.CombinedDerivedVarsFilePath = util.PathJoin(c.OriginPath, c.Combined_Derived_Vars_File)
 }
