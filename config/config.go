@@ -28,20 +28,24 @@ type ColonizeConfig struct {
 	WalkableDerivedPaths        []string
 	CombinedDerivedValsFilePath string
 	CombinedDerivedVarsFilePath string
+	CombinedRemoteFilePath      string
+	RemoteFilePath              string
 
 	// Read in from config
-	Templates_Dir              string
-	Environments_Dir           string
-	Autogenerate_Comment       string
-	Combined_Vals_File         string
-	Combined_Vars_File         string
-	Combined_Derived_Vars_File string
-	Combined_Derived_Vals_File string
-	Combined_Tf_File           string
-	Derived_File               string
-	Variable_Tf_File           string
-	Vars_File_Env_Post_String  string
-	Vals_File_Env_Post_String  string
+	Templates_Dir               string
+	Environments_Dir            string
+	Autogenerate_Comment        string
+	Combined_Vals_File          string
+	Combined_Vars_File          string
+	Combined_Derived_Vars_File  string
+	Combined_Derived_Vals_File  string
+	Combined_Tf_File            string
+	Combined_Remote_Config_File string
+	Remote_Config_File          string
+	Derived_File                string
+	Variable_Tf_File            string
+	Vars_File_Env_Post_String   string
+	Vals_File_Env_Post_String   string
 }
 
 type LoadConfigInput struct {
@@ -153,4 +157,10 @@ func (c *ColonizeConfig) initialize() {
 	)
 	c.CombinedDerivedValsFilePath = util.PathJoin(c.OriginPath, c.Combined_Derived_Vals_File)
 	c.CombinedDerivedVarsFilePath = util.PathJoin(c.OriginPath, c.Combined_Derived_Vars_File)
+
+	c.CombinedRemoteFilePath = util.PathJoin(c.OriginPath, c.Combined_Remote_Config_File)
+	c.RemoteFilePath = util.PathJoin(
+		util.PathJoin(c.RootPath, c.Environments_Dir),
+		c.Remote_Config_File,
+	)
 }

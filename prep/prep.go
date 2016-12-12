@@ -14,7 +14,7 @@ import (
 )
 
 func Run(c *config.ColonizeConfig) error {
-	err := BuildCombinedValuesFile(c)
+	err := BuildCombinedValsFile(c)
 	if err != nil {
 		return err
 	}
@@ -34,10 +34,15 @@ func Run(c *config.ColonizeConfig) error {
 		return err
 	}
 
+	err = BuildRemoteFile(c)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func BuildCombinedValuesFile(c *config.ColonizeConfig) error {
+func BuildCombinedValsFile(c *config.ColonizeConfig) error {
 	combined, err := combineFiles(c.WalkableValPaths)
 	if err != nil {
 		return err
@@ -75,13 +80,30 @@ func BuildCombinedDerivedFiles(c *config.ColonizeConfig) error {
 	if err != nil {
 		return err
 	}
-	substituted := subDerivedWithVariables(c, combined)
+	content, err := ioutil.ReadFile(c.CombinedValsFilePath)
+	if err != nil {
+		return err
+	}
+	substituted := subDerivedWithVariables(content, combined)
 	err = writeCombinedFile(c.CombinedDerivedValsFilePath, substituted)
 	if err != nil {
 		return err
 	}
 	derVars := getDerivedAsVariables(c)
 	return writeCombinedFile(c.CombinedDerivedVarsFilePath, derVars)
+}
+
+func BuildRemoteFile(c *config.ColonizeConfig) error {
+	valFile, err := getOneValsFile(c)
+	if err != nil {
+		return err
+	}
+	remote, err := ioutil.ReadFile(c.RemoteFilePath)
+	if err != nil {
+		return err
+	}
+	substituted := subDerivedWithVariables(valFile, remote)
+	return writeCombinedFile(c.CombinedRemoteFilePath, substituted)
 }
 
 func findTfFilesToCombine(dirPaths []string, vFile, dFile string) []string {
@@ -184,13 +206,25 @@ func getConfDerivedVarList(c *config.ColonizeConfig) [][2]string {
 	}
 }
 
-func subDerivedWithVariables(c *config.ColonizeConfig, derived []byte) []byte {
-	content, _ := ioutil.ReadFile(c.CombinedValsFilePath)
+func subDerivedWithVariables(content, derived []byte) []byte {
 	for k, v := range getVariableMap(content) {
 		derived = bytes.Replace(derived, []byte("${var."+k+"}"), []byte(v), -1)
 	}
 
 	return derived
+}
+
+func getOneValsFile(c *config.ColonizeConfig) ([]byte, error) {
+	combined, err := ioutil.ReadFile(c.CombinedValsFilePath)
+	if err != nil {
+		return nil, err
+	}
+	derived, err := ioutil.ReadFile(c.CombinedDerivedValsFilePath)
+	if err != nil {
+		return nil, err
+	}
+
+	return append(combined, derived...), nil
 }
 
 func getVariableMap(content []byte) map[string]string {

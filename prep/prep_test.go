@@ -20,17 +20,18 @@ var _ = Describe("Prep", func() {
 	})
 	AfterEach(func() {
 		// remove files.
-		//_ = os.Remove(conf.CombinedValsFilePath)
-		//_ = os.Remove(conf.CombinedVarsFilePath)
+		_ = os.Remove(conf.CombinedValsFilePath)
+		_ = os.Remove(conf.CombinedVarsFilePath)
 		_ = os.Remove(conf.CombinedTfFilePath)
-		//_ = os.Remove(conf.CombinedDerivedFilePath)
+		_ = os.Remove(conf.CombinedDerivedVarsFilePath)
+		_ = os.Remove(conf.CombinedDerivedValsFilePath)
 	})
 
 	PDescribe("Run", func() {})
 
-	Describe("BuildCombinedValuesFile", func() {
+	Describe("BuildCombinedValsFile", func() {
 		BeforeEach(func() {
-			err = BuildCombinedValuesFile(conf)
+			err = BuildCombinedValsFile(conf)
 		})
 
 		It("should create the combined file", func() {
@@ -94,6 +95,8 @@ variable "vpc_var" {}
 
 	Describe("BuildCombinedDerivedFiles", func() {
 		BeforeEach(func() {
+			// reads in vals file in order to do substitutions
+			err = BuildCombinedValsFile(conf)
 			err = BuildCombinedDerivedFiles(conf)
 		})
 
@@ -114,6 +117,30 @@ variable "vpc_var" {}
 		It("should have the right var contents", func() {
 			contents, _ := ioutil.ReadFile(conf.CombinedDerivedVarsFilePath)
 			expected := "variable \"test_derived\" {}\n"
+			Ω(string(contents)).To(Equal(expected))
+		})
+	})
+
+	Describe("BuildRemoteFile", func() {
+		BeforeEach(func() {
+			// reads in vals and derived files in order to do substitutions
+			err = BuildCombinedValsFile(conf)
+			err = BuildCombinedDerivedFiles(conf)
+			err = BuildRemoteFile(conf)
+		})
+
+		It("should create the combined remote shell script", func() {
+			Ω(conf.CombinedRemoteFilePath).To(BeARegularFile())
+		})
+
+		It("should have the right contents", func() {
+			contents, _ := ioutil.ReadFile(conf.CombinedRemoteFilePath)
+			expected := `terraform remote config \
+-backend=s3 \
+-backend-config="bucket=dev" \
+-backend-config="region=dev_root_var" \
+-backend-config="key=foo-dev-bar-vpc"
+`
 			Ω(string(contents)).To(Equal(expected))
 		})
 	})
