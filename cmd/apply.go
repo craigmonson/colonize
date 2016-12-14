@@ -1,13 +1,12 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 
 	"github.com/craigmonson/colonize/apply"
 )
-
-var SkipRemote bool
-var RemoteStateAfterApply bool
 
 var applyCmd = &cobra.Command{
 	Use:   "apply",
@@ -34,7 +33,4 @@ to quickly create a Cobra application.`,
 
 func init() {
 	RootCmd.AddCommand(applyCmd)
-
-	RootCmd.Flags().BoolVarP(&SkipRemote, "skip_remote", "r", false, "skip execution of remote configuration.")
-	RootCmd.Flags().BoolVarP(&SkipRemote, "remote_state_after_apply", "a", false, "Run remote state after terraform apply (if it was skipped).")
 }

@@ -1,12 +1,12 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 
 	"github.com/craigmonson/colonize/plan"
 )
-
-var SkipRemote bool
 
 // planCmd represents the plan command
 var planCmd = &cobra.Command{
@@ -34,6 +34,4 @@ to quickly create a Cobra application.`,
 
 func init() {
 	RootCmd.AddCommand(planCmd)
-
-	RootCmd.Flags().BoolVarP(&SkipRemote, "skip_remote", "r", false, "skip execution of remote configuration.")
 }

@@ -34,6 +34,7 @@ type ColonizeConfig struct {
 	// Read in from config
 	Templates_Dir               string
 	Environments_Dir            string
+	Base_Environment_Ext        string
 	Autogenerate_Comment        string
 	Combined_Vals_File          string
 	Combined_Vars_File          string

@@ -14,6 +14,8 @@ import (
 var Environment string
 var Config *config.ColonizeConfig
 var Log = log.Log{}
+var SkipRemote bool
+var RemoteStateAfterApply bool
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -72,4 +74,7 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	RootCmd.PersistentFlags().BoolVarP(&SkipRemote, "skip_remote", "r", false, "skip execution of remote configuration.")
+	RootCmd.PersistentFlags().BoolVarP(&SkipRemote, "remote_state_after_apply", "a", false, "Run remote state after terraform apply (if it was skipped).")
 }

@@ -2,7 +2,7 @@ package prep
 
 import (
 	"bytes"
-	//"fmt"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"regexp"
@@ -19,6 +19,7 @@ func Run(c *config.ColonizeConfig, l log.Logger) error {
 
 func runLeaf(c *config.ColonizeConfig, l log.Logger) error {
 	os.Chdir(c.TmplPath)
+
 	l.Log("Removing .terraform directory...")
 	err := os.RemoveAll(util.PathJoin(c.TmplPath, ".terraform"))
 	if err != nil {
@@ -86,8 +87,11 @@ func BuildCombinedTfFile(c *config.ColonizeConfig) error {
 		c.Variable_Tf_File,
 		c.Derived_File,
 	)
+	envSpecific := findEnvSpecificTfFilesToCombine(c)
+	allTfFiles := append(tfFiles, envSpecific...)
+	fmt.Println(envSpecific)
 
-	combined, err := combineFiles(tfFiles)
+	combined, err := combineFiles(allTfFiles)
 	if err != nil {
 		return err
 	}
@@ -135,6 +139,44 @@ func findTfFilesToCombine(dirPaths []string, vFile, dFile string) []string {
 				combineable = append(combineable, fullPath)
 			}
 		}
+	}
+
+	return combineable
+}
+
+func findEnvSpecificTfFilesToCombine(c *config.ColonizeConfig) []string {
+	combineable := []string{}
+	fileList, _ := ioutil.ReadDir(c.OriginPath)
+	// add environment specific files
+	for _, fPath := range fileList {
+		if m, _ := regexp.MatchString(`.*\.tf\.`+c.Environment, fPath.Name()); m {
+			combineable = append(combineable, util.PathJoin(c.OriginPath, fPath.Name()))
+		}
+	}
+
+	// add any 'base' files that don't have matching env specific files
+	reg, _ := regexp.Compile(`^(.*\.tf\.)` + c.Base_Environment_Ext + `$`)
+	for _, fPath := range fileList {
+		m := reg.FindAllStringSubmatch(fPath.Name(), -1)
+
+		// didn't match?, skip
+		if len(m) == 0 {
+			continue
+		}
+
+		envFileExists := false
+		for _, envPath := range combineable {
+			fmt.Println(m[0][1])
+			if m, _ := regexp.MatchString(m[0][1]+c.Environment, envPath); m {
+				envFileExists = true
+			}
+		}
+
+		if envFileExists {
+			continue
+		}
+
+		combineable = append(combineable, util.PathJoin(c.OriginPath, fPath.Name()))
 	}
 
 	return combineable

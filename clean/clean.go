@@ -33,7 +33,7 @@ func Run(c *config.ColonizeConfig, l log.Logger) error {
 
 	for _, file := range filesToClean {
 		l.Log("rm -f " + file)
-		util.RunCmd("rm -f " + file)
+		util.RunCmd("rm", "-f", file)
 	}
 
 	return nil

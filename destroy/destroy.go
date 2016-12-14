@@ -13,7 +13,7 @@ import (
 	"github.com/craigmonson/colonize/util"
 )
 
-func Run(c *config.ColonizeConfig, l log.Logger, skipRemote bool, remoteAfterApply bool) error {
+func Run(c *config.ColonizeConfig, l log.Logger, skipRemote bool) error {
 	os.Chdir(c.TmplPath)
 
 	if skipRemote {

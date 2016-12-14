@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 
 	"github.com/craigmonson/colonize/clean"
@@ -21,7 +23,7 @@ to quickly create a Cobra application.`,
 			Log.Log(err.Error())
 			os.Exit(-1)
 		}
-		err = clean.Run(conf, Log, SkipRemote)
+		err = clean.Run(conf, Log)
 		if err != nil {
 			Log.Log("Clean failed to run: " + err.Error())
 			os.Exit(-1)

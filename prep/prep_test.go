@@ -131,7 +131,7 @@ variable "vpc_var" {}
 
 		It("should have the right contents", func() {
 			contents, _ := ioutil.ReadFile(conf.CombinedTfFilePath)
-			expected := "provider \"aws\" {}\nvariable \"vpc_tf_test\" {}\n"
+			expected := "provider \"aws\" {}\nvariable \"vpc_tf_test\" {}\n# test env file\n# test base file\n"
 			Ω(string(contents)).To(Equal(expected))
 		})
 	})

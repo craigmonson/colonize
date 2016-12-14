@@ -1,12 +1,12 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 
-	"github.com/craigmonson/colonize/apply"
+	"github.com/craigmonson/colonize/destroy"
 )
-
-var SkipRemote bool
 
 var destroyCmd = &cobra.Command{
 	Use:   "destroy",
@@ -33,6 +33,4 @@ to quickly create a Cobra application.`,
 
 func init() {
 	RootCmd.AddCommand(applyCmd)
-
-	RootCmd.Flags().BoolVarP(&SkipRemote, "skip_remote", "r", false, "skip execution of remote configuration.")
 }

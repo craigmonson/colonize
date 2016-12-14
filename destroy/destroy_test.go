@@ -28,7 +28,7 @@ var _ = Describe("Plan", func() {
 	Describe("Run", func() {
 		Context("Given the proper inputs", func() {
 			BeforeEach(func() {
-				Run(conf, mLog, false, false)
+				Run(conf, mLog, false)
 			})
 			It("should run the remote config", func() {
 				Ω(um.MCmd.Cmd).To(MatchRegexp(conf.CombinedRemoteFilePath))
@@ -50,7 +50,7 @@ var _ = Describe("Plan", func() {
 
 		Context("when skipRemote is true", func() {
 			BeforeEach(func() {
-				Run(conf, mLog, true, false)
+				Run(conf, mLog, true)
 			})
 
 			It("should NOT run the remote config", func() {
