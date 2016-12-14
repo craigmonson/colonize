@@ -9,35 +9,54 @@ import (
 	"strings"
 
 	"github.com/craigmonson/colonize/config"
+	"github.com/craigmonson/colonize/log"
 	"github.com/craigmonson/colonize/util"
-	//"github.com/craigmonson/colonize/variables"
 )
 
-func Run(c *config.ColonizeConfig) error {
-	err := BuildCombinedValsFile(c)
+func Run(c *config.ColonizeConfig, l log.Logger) error {
+	return runLeaf(c, l)
+}
+
+func runLeaf(c *config.ColonizeConfig, l log.Logger) error {
+	os.Chdir(c.TmplPath)
+	l.Log("Removing .terraform directory...")
+	err := os.RemoveAll(util.PathJoin(c.TmplPath, ".terraform"))
 	if err != nil {
 		return err
 	}
 
+	l.Log("Building combined terraform variable assignment files...")
+	err = BuildCombinedValsFile(c)
+	if err != nil {
+		return err
+	}
+
+	l.Log("Building combined variable files...")
 	err = BuildCombinedVarsFile(c)
 	if err != nil {
 		return err
 	}
 
+	l.Log("Building combined terraform files...")
 	err = BuildCombinedTfFile(c)
 	if err != nil {
 		return err
 	}
 
+	l.Log("Building combined derived files...")
 	err = BuildCombinedDerivedFiles(c)
 	if err != nil {
 		return err
 	}
 
+	l.Log("Building remote config script...")
 	err = BuildRemoteFile(c)
 	if err != nil {
 		return err
 	}
+
+	l.Log("Fetching terraform modules...")
+	util.RunCmd("terraform", "get", "-update")
 
 	return nil
 }

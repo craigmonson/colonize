@@ -5,7 +5,9 @@ import (
 	"os"
 
 	"github.com/craigmonson/colonize/config"
+	"github.com/craigmonson/colonize/log_mock"
 	. "github.com/craigmonson/colonize/prep"
+	"github.com/craigmonson/colonize/util_mock"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -25,9 +27,50 @@ var _ = Describe("Prep", func() {
 		_ = os.Remove(conf.CombinedTfFilePath)
 		_ = os.Remove(conf.CombinedDerivedVarsFilePath)
 		_ = os.Remove(conf.CombinedDerivedValsFilePath)
+		_ = os.Remove(conf.CombinedRemoteFilePath)
 	})
 
-	PDescribe("Run", func() {})
+	Describe("Run", func() {
+		var mLog *log_mock.MockLog
+		var err error
+
+		BeforeEach(func() {
+			mLog = &log_mock.MockLog{}
+			util_mock.MCmd = &util_mock.MockCmd{}
+			util_mock.MockTheCommand()
+
+			err = Run(conf, mLog)
+		})
+
+		AfterEach(func() {
+			util_mock.ResetTheCommand()
+		})
+
+		It("should not raise an error", func() {
+			Ω(err).ToNot(HaveOccurred())
+		})
+
+		It("should log the steps", func() {
+			expected := `
+Removing .terraform directory...
+Building combined terraform variable assignment files...
+Building combined variable files...
+Building combined terraform files...
+Building combined derived files...
+Building remote config script...
+Fetching terraform modules...`
+			Ω(mLog.Output).To(Equal(expected))
+		})
+
+		It("should have terraform get modules", func() {
+			Ω(util_mock.MCmd.Cmd).To(Equal("\nterraform get -update"))
+		})
+
+		It("should run the exec.Run command", func() {
+			Ω(util_mock.MCmd.CallCount).To(Equal(1))
+		})
+
+	})
 
 	Describe("BuildCombinedValsFile", func() {
 		BeforeEach(func() {

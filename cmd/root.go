@@ -1,16 +1,19 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 
 	"github.com/craigmonson/colonize/config"
+	"github.com/craigmonson/colonize/log"
 )
 
 var Environment string
 var Config *config.ColonizeConfig
+var Log = log.Log{}
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -25,6 +28,25 @@ to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
+}
+
+// This is available for all the subcommands
+func GetConfig() (*config.ColonizeConfig, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	if Environment == "" {
+		return nil, errors.New("environment can not be empty")
+	}
+
+	config, err := config.LoadConfigInTree(cwd, Environment)
+	if err != nil {
+		return nil, err
+	}
+
+	return config, err
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -50,13 +72,4 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	cwd, err := os.Getwd()
-	if err != nil {
-		panic("Failed to find CWD: " + err.Error())
-	}
-
-	Config, err = config.LoadConfigInTree(cwd)
-	if err != nil {
-		panic("Failed to load config: " + err.Error())
-	}
 }

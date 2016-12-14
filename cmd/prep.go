@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
+	"os"
 
 	"github.com/craigmonson/colonize/prep"
 )
@@ -17,9 +19,15 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		err := prep.Run(Config, Environment)
+		conf, err := GetConfig()
 		if err != nil {
-			panic("Prep Failed to Run: " + err.Error())
+			Log.Log(err.Error())
+			os.Exit(-1)
+		}
+		err = prep.Run(conf, Log)
+		if err != nil {
+			Log.Log("Prep Failed to Run: " + err.Error())
+			os.Exit(-1)
 		}
 	},
 }
