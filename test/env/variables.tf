@@ -1,1 +1,0 @@
-variable "root_var" {}

@@ -53,8 +53,7 @@ var _ = Describe("Prep", func() {
 		It("should log the steps", func() {
 			expected := `
 Removing .terraform directory...
-Building combined terraform variable assignment files...
-Building combined variable files...
+Building combined variables files...
 Building combined terraform files...
 Building combined derived files...
 Building remote config script...
@@ -77,11 +76,32 @@ Fetching terraform modules...`
 			err = BuildCombinedValsFile(conf)
 		})
 
-		It("should create the combined file", func() {
+		It("should create the combined val file", func() {
 			Ω(conf.CombinedValsFilePath).To(BeARegularFile())
 		})
 
-		It("should have the right contents (derived too)", func() {
+		It("should create the combined var file", func() {
+			Ω(conf.CombinedVarsFilePath).To(BeARegularFile())
+		})
+
+		It("should have the right variable contents", func() {
+			contents, _ := ioutil.ReadFile(conf.CombinedVarsFilePath)
+			checks := []string{
+				`variable "root_path" {}`,
+				`variable "root_var" {}`,
+				`variable "vpc_var" {}`,
+				`variable "environment" {}`,
+				`variable "origin_path" {}`,
+				`variable "tmpl_name" {}`,
+				`variable "tmpl_path_dashed" {}`,
+				`variable "tmpl_path_underscored" {}`,
+			}
+			for _, expected := range checks {
+				Ω(string(contents)).To(MatchRegexp(expected))
+			}
+		})
+
+		It("should have the right values contents", func() {
 			contents, _ := ioutil.ReadFile(conf.CombinedValsFilePath)
 			expected := `environment = "dev"
 origin_path = "../test/vpc"
@@ -91,30 +111,6 @@ tmpl_path_underscored = "vpc"
 root_path = "../test"
 root_var = "dev_root_var"
 vpc_var = "dev_vpc_var"
-`
-			Ω(string(contents)).To(Equal(expected))
-		})
-	})
-
-	Describe("BuildCombinedVarsFile", func() {
-		BeforeEach(func() {
-			err = BuildCombinedVarsFile(conf)
-		})
-
-		It("should create the combined file", func() {
-			Ω(conf.CombinedVarsFilePath).To(BeARegularFile())
-		})
-
-		It("should have the right contents (derived too)", func() {
-			contents, _ := ioutil.ReadFile(conf.CombinedVarsFilePath)
-			expected := `variable "environment" {}
-variable "origin_path" {}
-variable "tmpl_name" {}
-variable "tmpl_path_dashed" {}
-variable "tmpl_path_underscored" {}
-variable "root_path" {}
-variable "root_var" {}
-variable "vpc_var" {}
 `
 			Ω(string(contents)).To(Equal(expected))
 		})

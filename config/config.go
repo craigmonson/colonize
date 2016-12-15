@@ -21,7 +21,6 @@ type ColonizeConfig struct {
 	WalkablePaths               []string
 	WalkableValPaths            []string
 	CombinedValsFilePath        string
-	WalkableVarPaths            []string
 	CombinedVarsFilePath        string
 	WalkableTfPaths             []string
 	CombinedTfFilePath          string
@@ -44,8 +43,6 @@ type ColonizeConfig struct {
 	Combined_Remote_Config_File string
 	Remote_Config_File          string
 	Derived_File                string
-	Variable_Tf_File            string
-	Vars_File_Env_Post_String   string
 	Vals_File_Env_Post_String   string
 }
 
@@ -113,10 +110,6 @@ func (c *ColonizeConfig) GetEnvValPath() string {
 	)
 }
 
-func (c *ColonizeConfig) GetEnvVarPath() string {
-	return util.PathJoin(c.Environments_Dir, c.Variable_Tf_File)
-}
-
 func (c *ColonizeConfig) GetEnvTfPath() string {
 	return c.Environments_Dir
 }
@@ -139,11 +132,6 @@ func (c *ColonizeConfig) initialize() {
 		c.GetEnvValPath(),
 	)
 	c.CombinedValsFilePath = util.PathJoin(c.OriginPath, c.Combined_Vals_File)
-
-	c.WalkableVarPaths = util.AppendPathToPaths(
-		c.WalkablePaths,
-		c.GetEnvVarPath(),
-	)
 	c.CombinedVarsFilePath = util.PathJoin(c.OriginPath, c.Combined_Vars_File)
 
 	c.WalkableTfPaths = util.AppendPathToPaths(

@@ -58,9 +58,7 @@ var _ = Describe("Config/Config", func() {
 				"Combined_Remote_Config_File": "_remote_setup.sh",
 				"Remote_Config_File":          "remote_setup.sh",
 				"Derived_File":                "derived.tfvars",
-				"Variable_Tf_File":            "variables.tf",
 				"Vals_File_Env_Post_String":   ".tfvars",
-				"Vars_File_Env_Post_String":   "_variables.tf",
 			}
 
 			for k := range attributes {
@@ -99,15 +97,6 @@ var _ = Describe("Config/Config", func() {
 				It("should set CombinedValsFilePath", func() {
 					expected := "../test/foo/bar/_combined.tfvars"
 					Ω(conf.CombinedValsFilePath).To(Equal(expected))
-				})
-
-				It("should set WalkableVarPaths", func() {
-					res := []string{
-						"../test/env/variables.tf",
-						"../test/foo/env/variables.tf",
-						"../test/foo/bar/env/variables.tf",
-					}
-					Ω(conf.WalkableVarPaths).To(Equal(res))
 				})
 
 				It("should set CombinedVarsFilePath", func() {
@@ -181,13 +170,6 @@ var _ = Describe("Config/Config", func() {
 		It("should return the environment file path for the env", func() {
 			c, _ := LoadConfigInTree("../test/vpc", environment)
 			Ω(c.GetEnvValPath()).To(Equal("env/dev.tfvars"))
-		})
-	})
-
-	Describe("GetEnvVarPath", func() {
-		It("should return the environment file path for the env", func() {
-			c, _ := LoadConfigInTree("../test/vpc", environment)
-			Ω(c.GetEnvVarPath()).To(Equal("env/variables.tf"))
 		})
 	})
 

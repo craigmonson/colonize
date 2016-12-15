@@ -2,7 +2,6 @@ package prep
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"regexp"
@@ -26,14 +25,8 @@ func runLeaf(c *config.ColonizeConfig, l log.Logger) error {
 		return err
 	}
 
-	l.Log("Building combined terraform variable assignment files...")
+	l.Log("Building combined variables files...")
 	err = BuildCombinedValsFile(c)
-	if err != nil {
-		return err
-	}
-
-	l.Log("Building combined variable files...")
-	err = BuildCombinedVarsFile(c)
 	if err != nil {
 		return err
 	}
@@ -68,28 +61,20 @@ func BuildCombinedValsFile(c *config.ColonizeConfig) error {
 		return err
 	}
 	complete := append(getConfigAsValues(c), combined...)
-	return writeCombinedFile(c.CombinedValsFilePath, complete)
-}
-
-func BuildCombinedVarsFile(c *config.ColonizeConfig) error {
-	combined, err := combineFiles(c.WalkableVarPaths)
+	err = writeCombinedFile(c.CombinedValsFilePath, complete)
 	if err != nil {
-		return err
+		return nil
 	}
-	complete := append(getConfigAsVariables(c), combined...)
-	return writeCombinedFile(c.CombinedVarsFilePath, complete)
+	// write out all value assignments as tf variables
+	valVars := getValsAsVariables(complete)
+	return writeCombinedFile(c.CombinedVarsFilePath, valVars)
 }
 
 func BuildCombinedTfFile(c *config.ColonizeConfig) error {
 	// get list of files to combine  they can be any tf files
-	tfFiles := findTfFilesToCombine(
-		c.WalkableTfPaths,
-		c.Variable_Tf_File,
-		c.Derived_File,
-	)
+	tfFiles := findTfFilesToCombine(c.WalkableTfPaths)
 	envSpecific := findEnvSpecificTfFilesToCombine(c)
 	allTfFiles := append(tfFiles, envSpecific...)
-	fmt.Println(envSpecific)
 
 	combined, err := combineFiles(allTfFiles)
 	if err != nil {
@@ -129,13 +114,13 @@ func BuildRemoteFile(c *config.ColonizeConfig) error {
 	return writeCombinedFile(c.CombinedRemoteFilePath, substituted)
 }
 
-func findTfFilesToCombine(dirPaths []string, vFile, dFile string) []string {
+func findTfFilesToCombine(dirPaths []string) []string {
 	combineable := []string{}
 	for _, path := range dirPaths {
 		fList, _ := ioutil.ReadDir(path)
 		for _, fPath := range fList {
 			fullPath := util.PathJoin(path, fPath.Name())
-			if isValidTfFile(fullPath, vFile, dFile) {
+			if isValidTfFile(fullPath) {
 				combineable = append(combineable, fullPath)
 			}
 		}
@@ -166,7 +151,6 @@ func findEnvSpecificTfFilesToCombine(c *config.ColonizeConfig) []string {
 
 		envFileExists := false
 		for _, envPath := range combineable {
-			fmt.Println(m[0][1])
 			if m, _ := regexp.MatchString(m[0][1]+c.Environment, envPath); m {
 				envFileExists = true
 			}
@@ -182,12 +166,9 @@ func findEnvSpecificTfFilesToCombine(c *config.ColonizeConfig) []string {
 	return combineable
 }
 
-func isValidTfFile(path, vFile, dFile string) bool {
-	// skip variable.tf, and files that don't end in '.tf'
-	isVarFile, _ := regexp.MatchString("/"+vFile+"$", path)
-	isDerivedFile, _ := regexp.MatchString("/"+dFile+"$", path)
+func isValidTfFile(path string) bool {
 	isTfFile, _ := regexp.MatchString("\\.tf$", path)
-	return !isVarFile && !isDerivedFile && isTfFile
+	return isTfFile
 }
 
 func combineFiles(paths []string) ([]byte, error) {
@@ -230,8 +211,13 @@ func getDerivedAsVariables(c *config.ColonizeConfig) []byte {
 	if err != nil {
 		panic(err)
 	}
-	derList := getDerivedVarList(combined)
+	derList := getContentAsVarList(combined)
 	return getListAsVariables(derList)
+}
+
+func getValsAsVariables(content []byte) []byte {
+	varList := getContentAsVarList(content)
+	return getListAsVariables(varList)
 }
 
 func getListAsVariables(varList [][2]string) []byte {
@@ -244,7 +230,7 @@ func getListAsVariables(varList [][2]string) []byte {
 	return []byte(output)
 }
 
-func getDerivedVarList(content []byte) [][2]string {
+func getContentAsVarList(content []byte) [][2]string {
 	output := [][2]string{}
 	for k, v := range getVariableMap(content) {
 		output = append(output, [2]string{k, v})
