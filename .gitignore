@@ -32,3 +32,5 @@ _testmain.go
 # testing files
 _combined*
 _remote*
+
+colonize
