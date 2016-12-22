@@ -7,18 +7,21 @@ import (
 	"strings"
 )
 
-const RootFile = ".colonize.yaml"
+var RootFiles = []string {".colonize.yaml", ".colonize.yml"}
 
 // search through myPath till you find the config file, and return the path to
 // it.
 func FindCfgPath(myPath string) (string, error) {
 	// cleanup and combine config file and search path
 	cleanedP := path.Clean(myPath)
-	fSearch := path.Join(cleanedP, RootFile)
 
-	// if the file exists, return the full path to the config file.
-	if fileExists(fSearch) {
-		return fSearch, nil
+	for _,rootfile := range RootFiles {
+		fSearch := path.Join(cleanedP, rootfile)
+
+		// if the file exists, return the full path to the config file.
+		if fileExists(fSearch) {
+			return fSearch, nil
+		}
 	}
 
 	// split it for recurisve search.
@@ -26,7 +29,7 @@ func FindCfgPath(myPath string) (string, error) {
 
 	// if this is the end of the line for the path, return an error
 	if newP == "/" || newP == "" || newP == "." || newP == ".." {
-		return "", errors.New(RootFile + " not found in the directory tree.")
+		return "", errors.New(RootFiles[0] + " not found in the directory tree.")
 	}
 
 	// recurse
