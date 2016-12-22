@@ -13,9 +13,9 @@ type MockCmd struct {
 	Cmd       string
 }
 
-func (c *MockCmd) Run() error {
+func (c *MockCmd) CombinedOutput() ([]byte, error) {
 	c.CallCount++
-	return nil
+	return []byte("test"),nil
 }
 
 var MCmd = &MockCmd{}

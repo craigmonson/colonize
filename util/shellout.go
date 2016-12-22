@@ -5,7 +5,7 @@ import (
 )
 
 type Cmder interface {
-	Run() error
+        CombinedOutput() ([]byte, error)
 }
 
 type Cmd struct {
@@ -16,7 +16,9 @@ var NewCmd = func(cmd string, arg ...string) Cmder {
 	return exec.Command(cmd, arg...)
 }
 
-func RunCmd(cmd string, arg ...string) error {
+func RunCmd(cmd string, arg ...string) (error,string) {
 	newCmd := NewCmd(cmd, arg...)
-	return newCmd.Run()
+        output, err := newCmd.CombinedOutput()
+
+        return err,string(output)
 }

@@ -24,7 +24,10 @@ to quickly create a Cobra application.`,
 			Log.Log(err.Error())
 			os.Exit(-1)
 		}
-		err = plan.Run(conf, Log, SkipRemote)
+
+                err,output := plan.Run(conf, Log, SkipRemote)
+                Log.Log(output)
+
 		if err != nil {
 			Log.Log("Plan failed to run: " + err.Error())
 			os.Exit(-1)
