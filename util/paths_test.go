@@ -14,7 +14,7 @@ var _ = Describe("util/paths", func() {
 	path := "../test/"
 
 	Describe("FindCfgPath", func() {
-		Context("given a path that contains a "+RootFile, func() {
+		Context("given a path that contains a "+RootFiles[0], func() {
 			var testPath string
 
 			BeforeEach(func() {
@@ -22,7 +22,7 @@ var _ = Describe("util/paths", func() {
 			})
 
 			It("should return the full path to the config file", func() {
-				Ω(testPath).To(Equal(path + RootFile))
+				Ω(testPath).To(Equal(path + RootFiles[0]))
 			})
 
 			It("should not return an error", func() {
@@ -30,7 +30,7 @@ var _ = Describe("util/paths", func() {
 			})
 		})
 
-		Context("given a path that doesn't have a "+RootFile, func() {
+		Context("given a path that doesn't have a "+RootFiles[0], func() {
 			var testPath string
 
 			BeforeEach(func() {
@@ -42,7 +42,7 @@ var _ = Describe("util/paths", func() {
 			})
 
 			It("should return an error", func() {
-				Ω(err).Should(MatchError(RootFile + " not found in the directory tree."))
+				Ω(err).Should(MatchError(RootFiles[0] + " not found in the directory tree."))
 			})
 		})
 	})
