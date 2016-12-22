@@ -24,13 +24,15 @@ func Run(c *config.ColonizeConfig, l log.Logger, skipRemote bool, remoteAfterApp
 	}
 
 	l.Log("Executing terraform apply")
-	util.RunCmd(
+        err,output := util.RunCmd(
 		"terraform",
 		"apply",
 		"-parallelism", "1",
 		"-var-file", c.CombinedValsFilePath,
 		"-var-file", c.CombinedDerivedValsFilePath,
 	)
+
+        l.Log(output)
 
 	if skipRemote {
 		if remoteAfterApply {
@@ -43,5 +45,5 @@ func Run(c *config.ColonizeConfig, l log.Logger, skipRemote bool, remoteAfterApp
 		}
 	}
 
-	return nil
+	return err
 }
