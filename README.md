@@ -10,7 +10,7 @@ the ability to organize them in a defined manageable way.
 ## Install ##
 
 ### setup via go ###
-### add .colonize.yaml to rootof project ###
+### add .colonize.yaml to root of project ###
 
 ## Quick Concepts ##
 
@@ -246,10 +246,61 @@ will include `creds.tf.base` AND `db.tf.dev` into the `_combined.tf` file.
 Since terraform uses any files named with the `.tf` extension, when terraform
 commands are executed, it will use both `main.tf`, and `_combined.tf`.
 
-# OLD DOCUMENTATION BELOW #
-#### 4.  There must be a make\_order.txt file in order to use the branch make ####
+#### 4.  TBD: There must be a make\_order.txt file in order to use the branch make ####
 
 ## Execution ##
+
+The best thing to do when refering to the execution of commnds in colonize is
+to review the inline documentation.  However, what follows is a quick 
+overview on what's available via the colonize commands.
+
+The commands _mostly_ build upon themselves, so follow this order:
+  * prep
+  * plan
+  * apply
+  * destroy
+  * clean
+
+**NOTE**: prep will be run automatically for the plan command.  This is to
+allow for the closest similarities to the actual terraform commands, from which
+colonize tries to mimic. (plan, apply, destroy)
+
+### ```colonize prep --environment=<env>``` ###
+
+The **prep** command is the workhorse of the colonize command.  It does all of
+the combining and tree walking to generate files that the installed terraform
+will utilize in it's plan / apply / destroy runs.  As one would expect, this
+prepares terraform for the given environment ```<env>```
+
+All of the generated files are prepended with the underscore ("\_"), so should
+be easily identifiable upon completion of the execution.
+
+It should be noted that once prep has been successfully executed, you should
+be able to execute _any_ terraform command, and the generated files will be
+utilized as expected.  Since colonize only runs a subset of the terraform
+commands, you can execute **prep** and run any terraform command to execute
+outside of colonize.  Since it's terraform that does the state data syncing,
+everything should stay ok, but you should be _very_ careful with this approach,
+as remote file setup etc may need to be manually handled.
+
+Prep does 2 things via terraform:
+  * It removes any ```.terraform``` directory (remote state) as the *first* step of the execution.
+  * It executes ```terraform get -update``` as the *last* step of the execution.
+
+The ```get -update``` isn't such a big deal, but it's **VERY** important to
+note that **prep** will remove the ```.terraform``` directory, as, depending on
+what non-colonize commads you've been executing, you may accidentally remove
+non-sync'd state data.
+
+### ```colonize plan --environment=<env>``` ###
+
+**plan** wraps ```terraform plan```.  It's important to understand that
+plan will execute **prep** first, regardless if prep has already been
+run.  This is important to know, because prep will **delete the .terraform
+direcory** as a first step.
+
+
+# OLD DOCUMENTATION BELOW #
 
 The terraform build scripts utilize the ```make``` command to perform all your
 terraform tasks.  Simply typing ```make``` or ```make help``` will print out a
