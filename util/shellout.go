@@ -5,7 +5,6 @@ import (
 )
 
 type Cmder interface {
-	Run() error
         CombinedOutput() ([]byte, error)
 }
 
