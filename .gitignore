@@ -33,4 +33,5 @@ _testmain.go
 _combined*
 _remote*
 
+# binary
 colonize

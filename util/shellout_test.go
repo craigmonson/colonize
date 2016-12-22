@@ -1,7 +1,6 @@
 package util_test
 
 import (
-	//"fmt"
 	"os/exec"
 
 	. "github.com/craigmonson/colonize/util"
@@ -16,9 +15,9 @@ type mockCmd struct {
 	callCount int
 }
 
-func (c *mockCmd) Run() error {
+func (c *mockCmd) CombinedOutput() ([]byte, error) {
 	c.callCount++
-	return nil
+	return []byte("test"),nil
 }
 
 // NOTE: this is actually testing the 'test' directory in the root of the
@@ -49,6 +48,7 @@ var _ = Describe("util/shellout", func() {
 	Describe("RunCmd", func() {
 		var origFunc func(string, ...string) Cmder
 		var err error
+                var output string
 		var mocked *mockCmd
 
 		BeforeEach(func() {
@@ -59,7 +59,7 @@ var _ = Describe("util/shellout", func() {
 				return mocked
 			}
 
-			err = RunCmd("ls", "-l")
+			err,output = RunCmd("ls", "-l")
 
 		})
 		AfterEach(func() {
@@ -73,5 +73,9 @@ var _ = Describe("util/shellout", func() {
 		It("should have called Run", func() {
 			Ω(mocked.callCount).To(Equal(1))
 		})
+
+                It("should have an output", func() {
+                        Ω(output).ShouldNot(BeEmpty())
+                })
 	})
 })
