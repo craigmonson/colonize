@@ -33,13 +33,13 @@ to quickly create a Cobra application.`,
 }
 
 // This is available for all the subcommands
-func GetConfig() (*config.ColonizeConfig, error) {
+func GetConfig(requireEnvironment bool) (*config.ColonizeConfig, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		return nil, err
 	}
 
-	if Environment == "" {
+	if requireEnvironment && Environment == "" {
 		return nil, errors.New("environment can not be empty")
 	}
 
@@ -50,6 +50,7 @@ func GetConfig() (*config.ColonizeConfig, error) {
 
 	return config, err
 }
+
 
 // Execute adds all child commands to the root command sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
