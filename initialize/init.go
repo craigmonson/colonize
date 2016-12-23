@@ -67,22 +67,40 @@ func Run(c *config.ColonizeConfig, l log.Logger) error {
   l.Print("Enter 'vals_file_env_post_string' [.tfvars]: ")
   c.Vals_File_Env_Post_String = scan_with_default(scan, ".tfvars")
 
-  //
-  //TODO: Generate remote config file??
-  //
-
-
   // print configuration details
   print_config(c,l)
 
   // Confirm initialization
-  l.Print("\n\nEnter 'y' to confirm or any other character to cancel: ")
-  scan.Scan()
-  if scan.Text() != "y" {
+  accept := ""
+  l.Log("\n")
+  for accept == "" {
+    l.Print("Please enter [y] to accept this configuration or [n] to cancel: ")
+    scan.Scan()
+    accept = scan.Text()
+  }
+
+  if accept != "y" {
     return errors.New("Colonize initialization cancelled by user")
   }
 
-  return nil
+  err := os.Mkdir(c.Templates_Dir,0644)
+  if err != nil {
+    return err
+  }
+
+  if c.Templates_Dir != c.Environments_Dir {
+    err = os.Mkdir(c.Environments_Dir,0644)
+    if err != nil {
+      return err
+    }
+  }
+
+
+  //
+  // TODO: Generate remote config file??
+  //
+
+  return c.WriteToFile(".colonize.yaml")
 }
 
 func scan_with_default(scan *bufio.Scanner, deflt string) string {
@@ -97,7 +115,7 @@ func scan_with_default(scan *bufio.Scanner, deflt string) string {
 }
 
 func print_config(c *config.ColonizeConfig, l log.Logger) {
-  l.Log("\n\nInitializing Colonize using the following config")
+  l.Log("\n\nInitializing Colonize using the following config:")
   l.Log("templates_dir               => " + c.Templates_Dir)
   l.Log("environments_dir            => " + c.Environments_Dir)
   l.Log("base_environment_ext        => " + c.Base_Environment_Ext)
