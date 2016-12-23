@@ -33,7 +33,6 @@ type ColonizeConfig struct {
 	RemoteFilePath              string   "remotefilepath,omitempty"
 
 	// Read in from config
-	Templates_Dir               string   "templates_dir"
 	Environments_Dir            string   "environments_dir"
 	Base_Environment_Ext        string   "base_environment_ext"
 	Autogenerate_Comment        string   "autogenerate_comment"
