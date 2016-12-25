@@ -47,19 +47,21 @@ func Run(c *config.ColonizeConfig, l log.Logger, acceptDefaults bool) error {
     configBuffer.WriteString(fmt.Sprintf("%-30s => %v\n",fieldName,actualField.Interface()))
   }
 
-  // print configuration details
-  l.Log(fmt.Sprintf("\n\nInitializing Colonize using the following config:\n%s\n",configBuffer.String()))
+  if !acceptDefaults {
+    // print configuration details
+    l.Log(fmt.Sprintf("\n\nInitializing Colonize using the following config:\n%s\n",configBuffer.String()))
 
-  // Confirm initialization
-  accept := ""
-  for accept == "" {
-    l.Print("Please enter [y] to accept this configuration or [n] to cancel: ")
-    scan.Scan()
-    accept = scan.Text()
-  }
+    // Confirm initialization
+    accept := ""
+    for accept == "" {
+      l.Print("Please enter [y] to accept this configuration or [n] to cancel: ")
+      scan.Scan()
+      accept = scan.Text()
+    }
 
-  if accept != "y" {
-    return errors.New("Colonize initialization cancelled by user")
+    if accept != "y" {
+      return errors.New("Colonize initialization cancelled by user")
+    }
   }
 
   return nil
