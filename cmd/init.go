@@ -60,7 +60,7 @@ var initCmd = &cobra.Command{
     }
     Log.Log("\nConfiguration file saved...")
 
-    err = os.Mkdir(blankConfig.ConfigFile.Environments_Dir,0644)
+    err = os.Mkdir(blankConfig.ConfigFile.Environments_Dir,0755)
     if err != nil {
       Log.Log("ERROR: Failed to crete environments directory: " + err.Error())
       os.Exit(-1)
