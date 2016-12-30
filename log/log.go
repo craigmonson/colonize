@@ -6,6 +6,7 @@ import (
 
 type Logger interface {
 	Log(string)
+        Print(string)
 }
 
 type Log struct {
@@ -14,4 +15,8 @@ type Log struct {
 
 func (l Log) Log(s string) {
 	fmt.Println(s)
+}
+
+func (l Log) Print(s string) {
+	fmt.Print(s)
 }

@@ -13,3 +13,7 @@ type MockLog struct {
 func (l *MockLog) Log(s string) {
 	l.Output = l.Output + "\n" + s
 }
+
+func (l *MockLog) Print(s string) {
+	l.Output = l.Output + s
+}

@@ -140,7 +140,7 @@ func findEnvSpecificTfFilesToCombine(c *config.ColonizeConfig) []string {
 	}
 
 	// add any 'base' files that don't have matching env specific files
-	reg, _ := regexp.Compile(`^(.*\.tf\.)` + c.Base_Environment_Ext + `$`)
+	reg, _ := regexp.Compile(`^(.*\.tf\.)` + c.ConfigFile.Base_Environment_Ext + `$`)
 	for _, fPath := range fileList {
 		m := reg.FindAllStringSubmatch(fPath.Name(), -1)
 
