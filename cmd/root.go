@@ -77,5 +77,5 @@ func init() {
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	RootCmd.PersistentFlags().BoolVarP(&SkipRemote, "skip_remote", "r", false, "skip execution of remote configuration.")
-	RootCmd.PersistentFlags().BoolVarP(&SkipRemote, "remote_state_after_apply", "a", false, "Run remote state after terraform apply (if it was skipped).")
+	RootCmd.PersistentFlags().BoolVarP(&RemoteStateAfterApply, "remote_state_after_apply", "a", false, "Run remote state after terraform apply (if it was skipped).")
 }
