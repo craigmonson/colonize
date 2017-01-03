@@ -38,15 +38,22 @@ func Run(c *config.ColonizeConfig, l log.Logger, skipRemote bool, remoteAfterApp
 
 	if skipRemote {
 		if remoteAfterApply {
-			l.Log("Running remote after apply")
-			os.Rename("terraform.tfstate", ".terraform/terraform.tfstate")
-			util.RunCmd("rm terraform.tfstate.backup")
-			_,output := util.RunCmd(c.CombinedRemoteFilePath)
-			l.Log(output)
+			remoteUpdate(c,l)
 		} else {
 			l.Log("Skipping remote setup post-apply. REMOTE NOT SYNC'D!")
 		}
+	} else {
+	  remoteUpdate(c,l)
 	}
 
 	return err
+}
+
+
+func remoteUpdate(c *config.ColonizeConfig, l log.Logger) {
+	l.Log("Running remote after apply")
+	os.Rename("terraform.tfstate", ".terraform/terraform.tfstate")
+	util.RunCmd("rm terraform.tfstate.backup")
+	_,output := util.RunCmd(c.CombinedRemoteFilePath)
+	l.Log(output)
 }
