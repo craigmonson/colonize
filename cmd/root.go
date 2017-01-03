@@ -20,16 +20,14 @@ var RemoteStateAfterApply bool
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "colonize",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "A terraform tool to manage environment driven templating",
+	Long: `
+Colonize is a configurable, albeit opinionated way to organize and manage your
+terraform templates. It revolves around the idea of environments, and allows
+you to organize templates, and template data around that common idiom.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
+Once it's been configured, it allows for hierarical templates and variables,
+and the ability to organize them in a defined manageable way.`,
 }
 
 // This is available for all the subcommands

@@ -11,13 +11,15 @@ import (
 // planCmd represents the plan command
 var planCmd = &cobra.Command{
 	Use:   "plan",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Plan a Terraform run for a specific environment",
+	Long: `
+This command will perform a "terraform plan" command on your project for the
+specified environment. This will generate a plan of changes that will be be
+applied to your environment when the "apply" command is run.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Example usage to plan the "dev" environment:
+$ colonize plan -e dev
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		conf, err := GetConfig(true)
 		if err != nil {
@@ -25,8 +27,8 @@ to quickly create a Cobra application.`,
 			os.Exit(-1)
 		}
 
-                err,output := plan.Run(conf, Log, SkipRemote)
-                Log.Log(output)
+		err,output := plan.Run(conf, Log, SkipRemote)
+		Log.Log(output)
 
 		if err != nil {
 			Log.Log("Plan failed to run: " + err.Error())

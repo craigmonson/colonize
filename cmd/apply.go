@@ -10,13 +10,16 @@ import (
 
 var applyCmd = &cobra.Command{
 	Use:   "apply",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Applies the Terraform plan to the target environment",
+	Long: `
+This command will perform a "terraform apply" command on your project for the
+existing Terraform plan. In effect, this will create/update/remove any managed
+resources according to the output of the "plan" command, for the given leaf
+or branch that apply command is run under
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Example usage to apply changes:
+$ colonize apply
+        `,
 	Run: func(cmd *cobra.Command, args []string) {
 		conf, err := GetConfig(false)
 		if err != nil {
