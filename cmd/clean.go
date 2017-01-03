@@ -10,13 +10,15 @@ import (
 
 var cleanCmd = &cobra.Command{
 	Use:   "clean",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Removes all Colonize prep data",
+	Long: `
+This command will remove all temproary and derived files that Colonize
+has created, via its "prep" command. This can be run at the leaf or the
+branch level.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Example usage to clean a project:
+$ colonize clean
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		conf, err := GetConfig(false)
 		if err != nil {

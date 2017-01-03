@@ -10,11 +10,15 @@ import (
 	//
 	"github.com/craigmonson/colonize/config"
 	"github.com/craigmonson/colonize/log"
+	"github.com/craigmonson/colonize/prep"
 	"github.com/craigmonson/colonize/util"
 )
 
 func Run(c *config.ColonizeConfig, l log.Logger, skipRemote bool) (error,string) {
 	os.Chdir(c.TmplPath)
+
+	// always run prep first
+	prep.Run(c, l)
 
 	if skipRemote {
 		l.Log("Skipping remote setup")
