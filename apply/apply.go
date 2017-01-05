@@ -20,11 +20,13 @@ func Run(c *config.ColonizeConfig, l log.Logger, skipRemote bool, remoteAfterApp
 		l.Log("Skipping remote setup")
 	} else {
 		l.Log("Running remote setup")
-		util.RunCmd("./" + c.CombinedRemoteFilePath)
+		util.RunCmd(c.CombinedRemoteFilePath)
+		_,output := util.RunCmd(c.CombinedRemoteFilePath)
+		l.Log(output)
 	}
 
 	l.Log("Executing terraform apply")
-        err,output := util.RunCmd(
+	err,output := util.RunCmd(
 		"terraform",
 		"apply",
 		"-parallelism", "1",
@@ -32,14 +34,15 @@ func Run(c *config.ColonizeConfig, l log.Logger, skipRemote bool, remoteAfterApp
 		"-var-file", c.CombinedDerivedValsFilePath,
 	)
 
-        l.Log(output)
+	l.Log(output)
 
 	if skipRemote {
 		if remoteAfterApply {
 			l.Log("Running remote after apply")
-			util.RunCmd("mv terraform.tfstate .terraform/.")
+			os.Rename("terraform.tfstate", ".terraform/terraform.tfstate")
 			util.RunCmd("rm terraform.tfstate.backup")
-			util.RunCmd("./" + c.CombinedRemoteFilePath)
+			_,output := util.RunCmd(c.CombinedRemoteFilePath)
+			l.Log(output)
 		} else {
 			l.Log("Skipping remote setup post-apply. REMOTE NOT SYNC'D!")
 		}
