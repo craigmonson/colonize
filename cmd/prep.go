@@ -10,13 +10,12 @@ import (
 // prepCmd represents the prep command
 var prepCmd = &cobra.Command{
 	Use:   "prep",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Generates files that Terraform utilizes",
+	Long: `
+The prep command is the workhorse of the colonize command. It does all of the combining and tree walking to generate files that the installed terraform will utilize in it's plan / apply / destroy runs. As one would expect, this prepares terraform for the given environment <env>
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+It can be run on it's own, however, it is run automatically by running the plan/destroy commands.
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		conf, err := GetConfig(true)
 		if err != nil {

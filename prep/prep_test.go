@@ -27,7 +27,7 @@ var _ = Describe("Prep", func() {
 		_ = os.Remove(conf.CombinedTfFilePath)
 		_ = os.Remove(conf.CombinedDerivedVarsFilePath)
 		_ = os.Remove(conf.CombinedDerivedValsFilePath)
-		_ = os.Remove(conf.CombinedRemoteFilePath)
+		//_ = os.Remove(conf.CombinedRemoteFilePath)
 	})
 
 	Describe("Run", func() {
@@ -76,12 +76,16 @@ Fetching terraform modules...`
 			err = BuildCombinedValsFile(conf)
 		})
 
-		It("should create the combined val file", func() {
+		It("should create the combined val file with proper permissions", func() {
 			Ω(conf.CombinedValsFilePath).To(BeARegularFile())
+			stat, _ := os.Stat(conf.CombinedValsFilePath)
+			Ω(int(stat.Mode())).To(Equal(0644))
 		})
 
-		It("should create the combined var file", func() {
+		It("should create the combined var file with proper permissions", func() {
 			Ω(conf.CombinedVarsFilePath).To(BeARegularFile())
+			stat, _ := os.Stat(conf.CombinedVarsFilePath)
+			Ω(int(stat.Mode())).To(Equal(0644))
 		})
 
 		It("should have the right variable contents", func() {
@@ -121,8 +125,10 @@ vpc_var = "dev_vpc_var"
 			err = BuildCombinedTfFile(conf)
 		})
 
-		It("should create the combined file", func() {
+		It("should create the combined file with proper permissions", func() {
 			Ω(conf.CombinedTfFilePath).To(BeARegularFile())
+			stat, _ := os.Stat(conf.CombinedTfFilePath)
+			Ω(int(stat.Mode())).To(Equal(0644))
 		})
 
 		It("should have the right contents", func() {
@@ -139,12 +145,16 @@ vpc_var = "dev_vpc_var"
 			err = BuildCombinedDerivedFiles(conf)
 		})
 
-		It("should create the combined val file", func() {
+		It("should create the combined val file with proper permissions", func() {
 			Ω(conf.CombinedDerivedValsFilePath).To(BeARegularFile())
+			stat, _ := os.Stat(conf.CombinedDerivedValsFilePath)
+			Ω(int(stat.Mode())).To(Equal(0644))
 		})
 
-		It("should create the combined var file", func() {
+		It("should create the combined var file with proper permissions", func() {
 			Ω(conf.CombinedDerivedVarsFilePath).To(BeARegularFile())
+			stat, _ := os.Stat(conf.CombinedDerivedVarsFilePath)
+			Ω(int(stat.Mode())).To(Equal(0644))
 		})
 
 		It("should have the right val contents", func() {
@@ -168,8 +178,10 @@ vpc_var = "dev_vpc_var"
 			err = BuildRemoteFile(conf)
 		})
 
-		It("should create the combined remote shell script", func() {
+		It("should create the executable combined remote shell script", func() {
 			Ω(conf.CombinedRemoteFilePath).To(BeARegularFile())
+			stat, _ := os.Stat(conf.CombinedRemoteFilePath)
+			Ω(int(stat.Mode())).To(Equal(0755))
 		})
 
 		It("should have the right contents", func() {

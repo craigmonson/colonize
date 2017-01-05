@@ -61,13 +61,13 @@ func BuildCombinedValsFile(c *config.ColonizeConfig) error {
 		return err
 	}
 	complete := append(getConfigAsValues(c), combined...)
-	err = writeCombinedFile(c.CombinedValsFilePath, complete)
+	err = writeCombinedFile(c.CombinedValsFilePath, complete, 0664)
 	if err != nil {
 		return nil
 	}
 	// write out all value assignments as tf variables
 	valVars := getValsAsVariables(complete)
-	return writeCombinedFile(c.CombinedVarsFilePath, valVars)
+	return writeCombinedFile(c.CombinedVarsFilePath, valVars, 0664)
 }
 
 func BuildCombinedTfFile(c *config.ColonizeConfig) error {
@@ -80,7 +80,7 @@ func BuildCombinedTfFile(c *config.ColonizeConfig) error {
 	if err != nil {
 		return err
 	}
-	return writeCombinedFile(c.CombinedTfFilePath, combined)
+	return writeCombinedFile(c.CombinedTfFilePath, combined, 0664)
 }
 
 func BuildCombinedDerivedFiles(c *config.ColonizeConfig) error {
@@ -93,12 +93,12 @@ func BuildCombinedDerivedFiles(c *config.ColonizeConfig) error {
 		return err
 	}
 	substituted := subDerivedWithVariables(content, combined)
-	err = writeCombinedFile(c.CombinedDerivedValsFilePath, substituted)
+	err = writeCombinedFile(c.CombinedDerivedValsFilePath, substituted, 0664)
 	if err != nil {
 		return err
 	}
 	derVars := getDerivedAsVariables(c)
-	return writeCombinedFile(c.CombinedDerivedVarsFilePath, derVars)
+	return writeCombinedFile(c.CombinedDerivedVarsFilePath, derVars, 0664)
 }
 
 func BuildRemoteFile(c *config.ColonizeConfig) error {
@@ -111,7 +111,7 @@ func BuildRemoteFile(c *config.ColonizeConfig) error {
 		return err
 	}
 	substituted := subDerivedWithVariables(valFile, remote)
-	return writeCombinedFile(c.CombinedRemoteFilePath, substituted)
+	return writeCombinedFile(c.CombinedRemoteFilePath, substituted, 0775)
 }
 
 func findTfFilesToCombine(dirPaths []string) []string {
@@ -188,8 +188,8 @@ func combineFiles(paths []string) ([]byte, error) {
 	return combined, nil
 }
 
-func writeCombinedFile(path string, content []byte) error {
-	return ioutil.WriteFile(path, content, 0666)
+func writeCombinedFile(path string, content []byte, mode os.FileMode) error {
+	return ioutil.WriteFile(path, content, mode)
 }
 
 func getConfigAsVariables(c *config.ColonizeConfig) []byte {
