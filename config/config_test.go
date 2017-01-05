@@ -253,6 +253,14 @@ var _ = Describe("Config/Config", func() {
 		})
 	})
 
+	Describe("IsNotBranch", func() {
+		It("should return the opposite of IsBranch", func() {
+			c, _ := LoadConfigInTree("../test", environment)
+			Ω(c.IsBranch()).To(BeTrue())
+			Ω(c.IsNotBranch()).To(BeFalse())
+		})
+	})
+
 	Describe("IsLeaf", func() {
 		Context("given a path to a branch", func() {
 			It("should return false", func() {
@@ -265,6 +273,14 @@ var _ = Describe("Config/Config", func() {
 				c, _ := LoadConfigInTree("../test/vpc", environment)
 				Ω(c.IsLeaf()).To(BeTrue())
 			})
+		})
+	})
+
+	Describe("IsNotLeaf", func() {
+		It("should return the opposite of IsLeaf", func() {
+			c, _ := LoadConfigInTree("../test", environment)
+			Ω(c.IsLeaf()).To(BeFalse())
+			Ω(c.IsNotLeaf()).To(BeTrue())
 		})
 	})
 })

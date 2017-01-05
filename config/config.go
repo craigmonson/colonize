@@ -154,8 +154,16 @@ func (c *ColonizeConfig) IsBranch() bool {
 	return true
 }
 
+func (c *ColonizeConfig) IsNotBranch() bool {
+	return !c.IsBranch()
+}
+
 func (c *ColonizeConfig) IsLeaf() bool {
 	return !c.IsBranch()
+}
+
+func (c *ColonizeConfig) IsNotLeaf() bool {
+	return !c.IsLeaf()
 }
 
 func (c *ColonizeConfig) initialize() {
