@@ -14,7 +14,7 @@ import (
 	"github.com/craigmonson/colonize/util"
 )
 
-func Run(c *config.ColonizeConfig, l log.Logger, skipRemote bool) (error,string) {
+func Run(c *config.Config, l log.Logger, skipRemote bool) (error,string) {
 	os.Chdir(c.TmplPath)
 
 	// always run prep first

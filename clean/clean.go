@@ -13,7 +13,7 @@ import (
 	"github.com/craigmonson/colonize/util"
 )
 
-func Run(c *config.ColonizeConfig, l log.Logger) error {
+func Run(c *config.Config, l log.Logger) error {
 	os.Chdir(c.TmplPath)
 
 	l.Log("Cleaning up")

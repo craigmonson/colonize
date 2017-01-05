@@ -11,7 +11,7 @@ import (
 )
 
 var _ = Describe("Plan", func() {
-	var conf *config.ColonizeConfig
+	var conf *config.Config
 	var mLog *log_mock.MockLog
 	var err error
 

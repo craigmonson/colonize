@@ -14,7 +14,7 @@ import (
 )
 
 var _ = Describe("Prep", func() {
-	var conf *config.ColonizeConfig
+	var conf *config.Config
 	var err error
 
 	BeforeEach(func() {

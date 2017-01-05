@@ -13,7 +13,7 @@ import (
 	"github.com/craigmonson/colonize/util"
 )
 
-func Run(c *config.ColonizeConfig, l log.Logger, skipRemote bool, remoteAfterApply bool) error {
+func Run(c *config.Config, l log.Logger, skipRemote bool, remoteAfterApply bool) error {
 	os.Chdir(c.TmplPath)
 
 	if skipRemote {
@@ -50,7 +50,7 @@ func Run(c *config.ColonizeConfig, l log.Logger, skipRemote bool, remoteAfterApp
 }
 
 
-func remoteUpdate(c *config.ColonizeConfig, l log.Logger) {
+func remoteUpdate(c *config.Config, l log.Logger) {
 	l.Log("Running remote after apply")
 	os.Rename("terraform.tfstate", ".terraform/terraform.tfstate")
 	util.RunCmd("rm terraform.tfstate.backup")

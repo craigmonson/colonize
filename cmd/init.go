@@ -46,7 +46,7 @@ var initCmd = &cobra.Command{
       os.Exit(0)
     }
 
-    var blankConfig config.ColonizeConfig
+    var blankConfig config.Config
     err = initialize.Run(&blankConfig, Log, acceptDefaults)
     if err != nil {
       Log.Log("ERROR: " + err.Error())

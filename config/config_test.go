@@ -38,7 +38,7 @@ var _ = Describe("Config/Config", func() {
 			})
 
 			It("should return the proper type", func() {
-				testConf := ColonizeConfig{}
+				testConf := Config{}
 				Ω(*conf).To(BeAssignableToTypeOf(testConf))
 			})
 
@@ -180,7 +180,7 @@ var _ = Describe("Config/Config", func() {
 				})
 
 				// Convert the yaml back to an object and compare
-				newConfig := ColonizeConfig{}
+				newConfig := Config{}
 				yaml.Unmarshal([]byte(yml), &newConfig.ConfigFile)
 
 				before := reflect.ValueOf(&conf.ConfigFile).Elem()
@@ -211,7 +211,7 @@ var _ = Describe("Config/Config", func() {
 			})
 
 			It("should return the proper type", func() {
-				testConf := ColonizeConfig{}
+				testConf := Config{}
 				Ω(*conf).To(BeAssignableToTypeOf(testConf))
 			})
 		})
