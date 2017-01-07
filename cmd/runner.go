@@ -12,6 +12,7 @@ func Run(f func(*config.Config, log.Logger, interface{}) error, c *config.Config
 		return RunBranch(f, c, l, reverse, args)
 	}
 
+	l.Log("Running " + c.TmplName)
 	return f(c, l, args)
 }
 
