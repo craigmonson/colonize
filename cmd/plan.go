@@ -27,8 +27,9 @@ $ colonize plan -e dev
 			os.Exit(-1)
 		}
 
-		err,output := plan.Run(conf, Log, SkipRemote)
-		Log.Log(output)
+		err = Run(plan.Run, conf, Log, false, plan.RunArgs{
+			SkipRemote: SkipRemote,
+		})
 
 		if err != nil {
 			Log.Log("Plan failed to run: " + err.Error())

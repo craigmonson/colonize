@@ -1,19 +1,14 @@
 package clean
 
 import (
-	//	"bytes"
-	//	//"fmt"
-	//	"io/ioutil"
 	"os"
-	//	"regexp"
-	//	"strings"
-	//
+
 	"github.com/craigmonson/colonize/config"
 	"github.com/craigmonson/colonize/log"
 	"github.com/craigmonson/colonize/util"
 )
 
-func Run(c *config.Config, l log.Logger) error {
+func Run(c *config.Config, l log.Logger, args interface{}) error {
 	os.Chdir(c.TmplPath)
 
 	l.Log("Cleaning up")

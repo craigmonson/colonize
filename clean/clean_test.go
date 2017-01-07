@@ -28,7 +28,7 @@ var _ = Describe("Clean", func() {
 	Describe("Run", func() {
 		Context("Given the proper inputs", func() {
 			BeforeEach(func() {
-				Run(conf, mLog)
+				Run(conf, mLog, nil)
 			})
 			It("should run the remote config", func() {
 				Ω(um.MCmd.Cmd).To(MatchRegexp(conf.CombinedRemoteFilePath))

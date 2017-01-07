@@ -238,6 +238,27 @@ var _ = Describe("Config/Config", func() {
 		})
 	})
 
+	Describe("GetBuildOrderPaths", func() {
+		Context("given the file exists", func() {
+			It("should return full paths for each build order step", func() {
+				c, _ := LoadConfigInTree("../test", environment)
+				expected := []string{"../test/vpc", "../test/microservices"}
+				res, err := c.GetBuildOrderPaths()
+				Ω(res).To(Equal(expected))
+				Ω(err).ToNot(HaveOccurred())
+			})
+		})
+
+		Context("given the file doesn't exist", func() {
+			It("should return nil, and an error", func() {
+				c, _ := LoadConfigInTree("../test/vpc", environment)
+				res, err := c.GetBuildOrderPaths()
+				Ω(res).To(BeNil())
+				Ω(err).To(HaveOccurred())
+			})
+		})
+	})
+
 	Describe("IsBranch", func() {
 		Context("given a path to a branch", func() {
 			It("should return true", func() {

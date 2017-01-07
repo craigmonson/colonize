@@ -12,11 +12,7 @@ import (
 	"github.com/craigmonson/colonize/util"
 )
 
-func Run(c *config.Config, l log.Logger) error {
-	return runLeaf(c, l)
-}
-
-func runLeaf(c *config.Config, l log.Logger) error {
+func Run(c *config.Config, l log.Logger, args interface{}) error {
 	os.Chdir(c.TmplPath)
 
 	l.Log("Removing .terraform directory...")

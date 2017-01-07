@@ -13,20 +13,27 @@ import (
 	"github.com/craigmonson/colonize/util"
 )
 
-func Run(c *config.Config, l log.Logger, skipRemote bool, remoteAfterApply bool) error {
+type RunArgs struct {
+	SkipRemote            bool
+	RemoteStateAfterApply bool
+}
+
+func Run(c *config.Config, l log.Logger, args interface{}) error {
+	runArgs := args.(RunArgs)
+
 	os.Chdir(c.TmplPath)
 
-	if skipRemote {
+	if runArgs.SkipRemote {
 		l.Log("Skipping remote setup")
 	} else {
 		l.Log("Running remote setup")
 		util.RunCmd(c.CombinedRemoteFilePath)
-		_,output := util.RunCmd(c.CombinedRemoteFilePath)
+		_, output := util.RunCmd(c.CombinedRemoteFilePath)
 		l.Log(output)
 	}
 
 	l.Log("Executing terraform apply")
-	err,output := util.RunCmd(
+	err, output := util.RunCmd(
 		"terraform",
 		"apply",
 		"-parallelism", "1",
@@ -36,24 +43,23 @@ func Run(c *config.Config, l log.Logger, skipRemote bool, remoteAfterApply bool)
 
 	l.Log(output)
 
-	if skipRemote {
-		if remoteAfterApply {
-			remoteUpdate(c,l)
+	if runArgs.SkipRemote {
+		if runArgs.RemoteStateAfterApply {
+			remoteUpdate(c, l)
 		} else {
 			l.Log("Skipping remote setup post-apply. REMOTE NOT SYNC'D!")
 		}
 	} else {
-	  remoteUpdate(c,l)
+		remoteUpdate(c, l)
 	}
 
 	return err
 }
 
-
 func remoteUpdate(c *config.Config, l log.Logger) {
 	l.Log("Running remote after apply")
 	os.Rename("terraform.tfstate", ".terraform/terraform.tfstate")
 	util.RunCmd("rm terraform.tfstate.backup")
-	_,output := util.RunCmd(c.CombinedRemoteFilePath)
+	_, output := util.RunCmd(c.CombinedRemoteFilePath)
 	l.Log(output)
 }

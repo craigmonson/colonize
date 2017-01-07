@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/craigmonson/colonize/util"
 	"gopkg.in/yaml.v2"
@@ -143,11 +144,33 @@ func (c *Config) GetEnvDerivedPath() string {
 	return util.PathJoin(c.ConfigFile.Environments_Dir, c.ConfigFile.Derived_File)
 }
 
+func (c *Config) GetBuildOrderPaths() ([]string, error) {
+	orderPath := util.PathJoin(c.OriginPath, c.ConfigFile.Branch_Order_File)
+	content, err := ioutil.ReadFile(orderPath)
+	if err != nil {
+		return nil, err
+	}
+	orders := cleanEmpties(strings.Split(string(content), "\n"))
+	paths := util.PrependPathToPaths(orders, c.OriginPath)
+
+	return paths, nil
+}
+
+func cleanEmpties(list []string) (newList []string) {
+	for i, v := range list {
+		if v != "" {
+			newList = append(newList, list[i])
+		}
+	}
+
+	return newList
+}
+
 func (c *Config) IsBranch() bool {
 	// if build_order.txt exists, then it's a branch, if not, we expect it to be
 	// a leaf.
-	branchPath := util.PathJoin(c.OriginPath, c.ConfigFile.Branch_Order_File)
-	if _, err := os.Stat(branchPath); os.IsNotExist(err) {
+	orderPath := util.PathJoin(c.OriginPath, c.ConfigFile.Branch_Order_File)
+	if _, err := os.Stat(orderPath); os.IsNotExist(err) {
 		return false
 	}
 
