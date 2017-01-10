@@ -24,7 +24,7 @@ func Run(c *config.Config, l log.Logger, args interface{}) error {
 		l.Log("Skipping remote setup")
 	} else {
 		l.Log("Running remote setup")
-		util.RunCmd("./" + c.CombinedRemoteFilePath)
+		util.RunCmd(c.CombinedRemoteFilePath)
 	}
 
 	l.Log("Executing terraform destroy")
