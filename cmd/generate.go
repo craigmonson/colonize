@@ -4,8 +4,11 @@ import (
   "fmt"
   "os"
   "strings"
+
   "github.com/spf13/cobra"
   "github.com/craigmonson/colonize/generate"
+  "github.com/craigmonson/colonize/generate/branch"
+  "github.com/craigmonson/colonize/generate/leaf"
 )
 
 
@@ -27,11 +30,18 @@ Placeholder text
   `,
   Run: func(cmd *cobra.Command, args []string) {
 
-    if len(args) < 1 {
-      Log.Log("You must specificy a branch name to create")
+    err := generate.ValidateArgsLength("Branch", args, 1, 1)
+    if err != nil {
+      Log.Log(err.Error())
       os.Exit(-1)
-    } else if len(args) > 1 {
-      Log.Log("You may only specify a single branch to create at a time")
+    }
+
+    name := args[0]
+    leafs := strings.Split(branchLeafs,",")
+
+    err = generate.ValidateNameAvailable("Branch", name)
+    if err != nil {
+      Log.Log(err.Error())
       os.Exit(-1)
     }
 
@@ -41,11 +51,8 @@ Placeholder text
       os.Exit(-1)
     }
 
-    branch := args[0]
-    leafs := strings.Split(branchLeafs,",")
-
-    err = generate.RunBranch(conf, Log, generate.RunBranchArgs{
-      Name: branch,
+    err = branch.Run(conf, Log, branch.RunArgs{
+      Name: name,
       Leafs: leafs,
     })
     if err != nil {
@@ -64,11 +71,16 @@ Placeholder text
   `,
   Run: func(cmd *cobra.Command, args []string) {
 
-    if len(args) < 1 {
-      Log.Log("You must specify a leaf name to create")
+    err := generate.ValidateArgsLength("Leaf", args, 1, 1)
+    if err != nil {
+      Log.Log(err.Error())
       os.Exit(-1)
-    } else if len(args) > 1 {
-      Log.Log("You may only create a single leaf at a time")
+    }
+
+    name := args[0]
+    err = generate.ValidateNameAvailable("Leaf", name)
+    if err != nil {
+      Log.Log(err.Error())
       os.Exit(-1)
     }
 
@@ -78,24 +90,23 @@ Placeholder text
       os.Exit(-1)
     }
 
-    leaf := args[0]
-    err = generate.RunLeaf(conf, Log, generate.RunLeafArgs{
-      Name: leaf,
+    // TODO: Pull file name from config struct (requires run-on-branches code)
+    build_order,err := os.OpenFile("build_order.txt", os.O_APPEND|os.O_WRONLY, 0664)
+    if err != nil {
+      Log.Log(fmt.Sprintf("Failed to add leaf '%s' to '%s'", name, "build_order.txt"))
+      os.Exit(-1)
+    }
+    defer build_order.Close()
+
+    err = leaf.Run(conf, Log, leaf.RunArgs{
+      Name: name,
+      BuildOrder: build_order,
     })
     if err != nil {
       Log.Log("Generate Leaf failed to run: " + err.Error())
       os.Exit(-1)
     }
 
-    build_order,err := os.Open("build_order.txt")
-    if err != nil {
-      // TODO: Pull file name from config struct (requires run-on-branches code)
-      Log.Log(fmt.Sprintf("Failed to add leaf '%s' to '%s'", leaf, "build_order.txt"))
-      os.Exit(-1)
-    }
-    defer build_order.Close()
-
-    build_order.WriteString(leaf + "\n")
   },
 }
 
