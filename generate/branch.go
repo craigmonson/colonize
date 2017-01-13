@@ -9,18 +9,25 @@ import (
   "github.com/craigmonson/colonize/log"
 )
 
+type RunBranchArgs struct {
+  Name  string
+  Leafs []string
+}
 
-func RunBranch(c *config.ColonizeConfig, l log.Logger, name string, leafs []string) error {
 
-  if _, err := os.Stat(name); err == nil {
-    return errors.New(fmt.Sprintf("Branch with name '%s' already exists", name))
+func RunBranch(c *config.ColonizeConfig, l log.Logger, args interface{}) error {
+
+  runArgs := args.(RunBranchArgs)
+
+  if _, err := os.Stat(runArgs.Name); err == nil {
+    return errors.New(fmt.Sprintf("Branch with name '%s' already exists", runArgs.Name))
   }
 
-  l.Log("Creating branch: " + name)
+  l.Log("Creating Branch: " + runArgs.Name)
 
   os.Chdir(c.TmplPath)
-  os.Mkdir(name, 0755)
-  os.Chdir(name)
+  os.Mkdir(runArgs.Name, 0755)
+  os.Chdir(runArgs.Name)
   os.Mkdir(c.ConfigFile.Environments_Dir, 0755)
 
   // TODO: Create <env>.tfvars in <branch_dir>/<env_dir>
@@ -33,9 +40,11 @@ func RunBranch(c *config.ColonizeConfig, l log.Logger, name string, leafs []stri
   defer build_order.Close()
 
 
-  if len(leafs) > 0 {
-    for _,leaf := range leafs {
-      err = RunLeaf(c, l, leaf)
+  if len(runArgs.Leafs) > 0 {
+    for _,leaf := range runArgs.Leafs {
+      err = RunLeaf(c, l, RunLeafArgs{
+        Name: leaf,
+      })
       if err != nil {
         return err
       }

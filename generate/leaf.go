@@ -9,18 +9,24 @@ import (
   "github.com/craigmonson/colonize/log"
 )
 
-func RunLeaf(c *config.ColonizeConfig, l log.Logger, name string) error {
+type RunLeafArgs struct {
+  Name string
+}
 
-  if _, err := os.Stat(name); err == nil {
+func RunLeaf(c *config.ColonizeConfig, l log.Logger, args interface{}) error {
+  runArgs := args.(RunLeafArgs)
+
+  //TODO: Make sure we're working in a branch
+
+  if _, err := os.Stat(runArgs.Name); err == nil {
     return errors.New("Leaf already exists")
   }
-  // TODO: Check that leaf doesn't exist
 
-  l.Log("Creating Leaf: " + name)
-  os.Mkdir(name, 0755)
+  l.Log("Creating Leaf: " + runArgs.Name)
+  os.Mkdir(runArgs.Name, 0755)
 
   // TODO: Cleaner touch?
-  fn, err := os.Create(fmt.Sprintf("%s/main.tf", name))
+  fn, err := os.Create(fmt.Sprintf("%s/main.tf", runArgs.Name))
   if err != nil {
     return err
   }

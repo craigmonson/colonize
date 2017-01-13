@@ -44,7 +44,10 @@ Placeholder text
     branch := args[0]
     leafs := strings.Split(branchLeafs,",")
 
-    err = generate.RunBranch(conf, Log, branch, leafs)
+    err = generate.RunBranch(conf, Log, generate.RunBranchArgs{
+      Name: branch,
+      Leafs: leafs,
+    })
     if err != nil {
       Log.Log("Generate Branch failed to run: " + err.Error())
       os.Exit(-1)
@@ -76,13 +79,15 @@ Placeholder text
     }
 
     leaf := args[0]
-    err = generate.RunLeaf(conf, Log, leaf)
+    err = generate.RunLeaf(conf, Log, generate.RunLeafArgs{
+      Name: leaf,
+    })
     if err != nil {
       Log.Log("Generate Leaf failed to run: " + err.Error())
       os.Exit(-1)
     }
 
-    build_order,err := os.Create("build_order.txt")
+    build_order,err := os.Open("build_order.txt")
     if err != nil {
       // TODO: Pull file name from config struct (requires run-on-branches code)
       Log.Log(fmt.Sprintf("Failed to add leaf '%s' to '%s'", leaf, "build_order.txt"))
