@@ -1,8 +1,6 @@
 package destroy
 
 import (
-	"os"
-
 	"github.com/craigmonson/colonize/config"
 	"github.com/craigmonson/colonize/log"
 	"github.com/craigmonson/colonize/prep"
@@ -15,7 +13,6 @@ type RunArgs struct {
 
 func Run(c *config.Config, l log.Logger, args interface{}) error {
 	runArgs := args.(RunArgs)
-	os.Chdir(c.TmplPath)
 
 	// always run prep first
 	prep.Run(c, l, nil)

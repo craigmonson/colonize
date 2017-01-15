@@ -15,7 +15,6 @@ type RunArgs struct {
 
 func Run(c *config.Config, l log.Logger, args interface{}) error {
 	runArgs := args.(RunArgs)
-	os.Chdir(c.TmplPath)
 
 	// always run prep first
 	prep.Run(c, l, nil)
@@ -30,6 +29,9 @@ func Run(c *config.Config, l log.Logger, args interface{}) error {
 	}
 
 	l.Log("Executing terraform plan")
+	l.Log(c.CombinedValsFilePath)
+	d, _ := os.Getwd()
+	l.Log(d)
 	err, out := util.RunCmd(
 		"terraform",
 		"plan",

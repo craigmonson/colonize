@@ -1,16 +1,12 @@
 package clean
 
 import (
-	"os"
-
 	"github.com/craigmonson/colonize/config"
 	"github.com/craigmonson/colonize/log"
 	"github.com/craigmonson/colonize/util"
 )
 
 func Run(c *config.Config, l log.Logger, args interface{}) error {
-	os.Chdir(c.TmplPath)
-
 	l.Log("Cleaning up")
 	filesToClean := []string{
 		c.CombinedValsFilePath,

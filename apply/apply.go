@@ -21,13 +21,12 @@ type RunArgs struct {
 func Run(c *config.Config, l log.Logger, args interface{}) error {
 	runArgs := args.(RunArgs)
 
-	os.Chdir(c.TmplPath)
-
 	if runArgs.SkipRemote {
 		l.Log("Skipping remote setup")
 	} else {
 		l.Log("Running remote setup")
-		util.RunCmd(c.CombinedRemoteFilePath)
+		// why is this being run twice?  accident?
+		//util.RunCmd(c.CombinedRemoteFilePath)
 		_, output := util.RunCmd(c.CombinedRemoteFilePath)
 		l.Log(output)
 	}

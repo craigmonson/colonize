@@ -13,8 +13,6 @@ import (
 )
 
 func Run(c *config.Config, l log.Logger, args interface{}) error {
-	os.Chdir(c.TmplPath)
-
 	l.Log("Removing .terraform directory...")
 	err := os.RemoveAll(util.PathJoin(c.TmplPath, ".terraform"))
 	if err != nil {

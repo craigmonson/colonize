@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/craigmonson/colonize/config"
 	"github.com/craigmonson/colonize/log"
 )
@@ -12,7 +14,7 @@ func Run(f func(*config.Config, log.Logger, interface{}) error, c *config.Config
 		return RunBranch(f, c, l, reverse, args)
 	}
 
-	l.Log("Running " + c.TmplName)
+	l.Log("Running " + c.TmplPath)
 	return f(c, l, args)
 }
 
@@ -29,6 +31,9 @@ func RunBranch(f func(*config.Config, log.Logger, interface{}) error, c *config.
 	}
 
 	for _, p := range buildPaths {
+		if err := os.Chdir(p); err != nil {
+			return err
+		}
 		newConf, err := config.LoadConfigInTree(p, c.Environment)
 		if err != nil {
 			return err
