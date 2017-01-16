@@ -23,8 +23,8 @@ func Run(c *config.Config, l log.Logger, args interface{}) error {
 	}
 
 	for _, file := range filesToClean {
-		l.Log("rm -f " + file)
-		util.RunCmd("rm", "-f", file)
+		l.Log("rm -rf " + file)
+		util.RunCmd("rm", "-rf", file)
 	}
 
 	return nil
