@@ -47,30 +47,27 @@ var _ = BeforeSuite(func() {
 
 // After all tests, cleanup
 var _ = AfterSuite(func() {
+  os.Chdir(cwd)
   build_order.Close()
   os.RemoveAll(test_dir)
-  os.Chdir(cwd)
 })
 
 
 var _ = Describe("generate/leaf/leaf", func() {
 
-  Describe("Run", func() {
+  It("should have created a directory for the leaf", func() {
+    _, err := os.Stat("test")
+    Ω(err).ShouldNot(HaveOccurred())
+  })
 
-    It("should have created a directory for the leaf", func() {
-      _, err := os.Stat("test")
-      Ω(err).ShouldNot(HaveOccurred())
-    })
+  It("should create a main.tf file inside the leaf", func() {
+    _, err := os.Stat("test/main.tf")
+    Ω(err).ShouldNot(HaveOccurred())
+  })
 
-    It("should create a main.tf file inside the leaf", func() {
-      _, err := os.Stat("test/main.tf")
-      Ω(err).ShouldNot(HaveOccurred())
-    })
-
-    It("should have appended the leaf name to build order", func() {
-      contents,err := ioutil.ReadFile("build_order.txt")
-      Ω(err).ShouldNot(HaveOccurred())
-      Ω(string(contents)).Should(Equal("test\n"))
-    })
+  It("should have appended the leaf name to build order", func() {
+    contents,err := ioutil.ReadFile("build_order.txt")
+    Ω(err).ShouldNot(HaveOccurred())
+    Ω(string(contents)).Should(Equal("test\n"))
   })
 })
