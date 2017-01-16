@@ -12,7 +12,7 @@ import (
 )
 
 var Environment string
-var Config *config.ColonizeConfig
+var Config *config.Config
 var Log = log.Log{}
 var SkipRemote bool
 var RemoteStateAfterApply bool
@@ -31,7 +31,7 @@ and the ability to organize them in a defined manageable way.`,
 }
 
 // This is available for all the subcommands
-func GetConfig(requireEnvironment bool) (*config.ColonizeConfig, error) {
+func GetConfig(requireEnvironment bool) (*config.Config, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		return nil, err

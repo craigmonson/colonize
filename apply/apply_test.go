@@ -11,9 +11,10 @@ import (
 )
 
 var _ = Describe("Plan", func() {
-	var conf *config.ColonizeConfig
+	var conf *config.Config
 	var mLog *log_mock.MockLog
 	var err error
+	var args = RunArgs{SkipRemote: false, RemoteStateAfterApply: false}
 
 	BeforeEach(func() {
 		conf, err = config.LoadConfigInTree("../test/vpc", "dev")
@@ -28,7 +29,7 @@ var _ = Describe("Plan", func() {
 	Describe("Run", func() {
 		Context("Given the proper inputs", func() {
 			BeforeEach(func() {
-				Run(conf, mLog, false, false)
+				Run(conf, mLog, args)
 			})
 			It("should run the remote config", func() {
 				Ω(um.MCmd.Cmd).To(MatchRegexp(conf.CombinedRemoteFilePath))
@@ -51,7 +52,8 @@ var _ = Describe("Plan", func() {
 		Context("when skipRemote is true", func() {
 			Context("when remoteAfterApply is false", func() {
 				BeforeEach(func() {
-					Run(conf, mLog, true, false)
+					args.SkipRemote = true
+					Run(conf, mLog, args)
 				})
 
 				It("should NOT run the remote config", func() {
@@ -72,7 +74,9 @@ var _ = Describe("Plan", func() {
 
 			Context("when remoteAfterApply is true", func() {
 				BeforeEach(func() {
-					Run(conf, mLog, true, true)
+					args.SkipRemote = true
+					args.RemoteStateAfterApply = true
+					Run(conf, mLog, args)
 				})
 
 				It("should run the remote config", func() {

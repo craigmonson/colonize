@@ -13,12 +13,12 @@ import (
   "github.com/craigmonson/colonize/log"
 )
 
-func Run(c *config.ColonizeConfig, l log.Logger, acceptDefaults bool) error {
+func Run(c *config.Config, l log.Logger, acceptDefaults bool) error {
 
   var configBuffer bytes.Buffer
 
   scan := bufio.NewScanner(os.Stdin)
-  defaults := reflect.ValueOf(&config.ColonizeConfigFileDefaults).Elem()
+  defaults := reflect.ValueOf(&config.ConfigFileDefaults).Elem()
   actuals := reflect.ValueOf(&c.ConfigFile).Elem()
   typeof := defaults.Type()
 

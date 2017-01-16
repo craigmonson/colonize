@@ -14,7 +14,7 @@ import (
 )
 
 var _ = Describe("Prep", func() {
-	var conf *config.ColonizeConfig
+	var conf *config.Config
 	var err error
 
 	BeforeEach(func() {
@@ -39,7 +39,7 @@ var _ = Describe("Prep", func() {
 			util_mock.MCmd = &util_mock.MockCmd{}
 			util_mock.MockTheCommand()
 
-			err = Run(conf, mLog)
+			err = Run(conf, mLog, nil)
 		})
 
 		AfterEach(func() {

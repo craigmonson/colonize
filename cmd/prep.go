@@ -22,7 +22,7 @@ It can be run on it's own, however, it is run automatically by running the plan/
 			Log.Log(err.Error())
 			os.Exit(-1)
 		}
-		err = prep.Run(conf, Log)
+		err = Run(prep.Run, conf, Log, false, nil)
 		if err != nil {
 			Log.Log("Prep Failed to Run: " + err.Error())
 			os.Exit(-1)
