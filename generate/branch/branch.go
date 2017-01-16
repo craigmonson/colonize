@@ -52,16 +52,17 @@ func Run(c *config.Config, l log.Logger, args interface{}) error {
 
   if len(runArgs.Leafs) > 0 {
     for _,leafName := range runArgs.Leafs {
-      err = leaf.Run(c, l, leaf.RunArgs{
-        Name: leafName,
-        BuildOrder: build_order,
-      })
-      if err != nil {
-        return err
+      if leafName != "" {
+        err = leaf.Run(c, l, leaf.RunArgs{
+          Name: leafName,
+          BuildOrder: build_order,
+        })
+        if err != nil {
+          return err
+        }
       }
     }
   }
-
 
   return nil
 }
