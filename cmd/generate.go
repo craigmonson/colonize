@@ -18,7 +18,18 @@ var generateCmd = &cobra.Command{
   Use: "generate",
   Short: "Generate Colonize project structure and resources",
   Long:`
+Use this Command suite to generate Colonzie resources and project structures. This
+command can be very useful for quickly creating and stubbing out project structures.
 
+Example usage:
+colonize generate <resource-type> [options]
+
+Example branch generation:
+colonize generate branch mybranch
+colonize generate branch mybranch --leafs myleaf1,myleaf2
+
+Example leaf generation:
+colonize generate leaf myleaf
   `,
 }
 
@@ -26,7 +37,13 @@ var genBranchCmd = &cobra.Command{
   Use: "branch",
   Short: "Generate a Colonize Branch in your project",
   Long: `
-Placeholder text
+The branch generation sub-command is used to generate a Colonize branch, including
+build order file, environment directory, environment tfvars, and optionally a list
+of leafs underneath the branch.
+
+Example usage:
+colonize generate branch mybranch
+colonize generate branch mybranch --leafs myleaf1,myleaf2
   `,
   Run: func(cmd *cobra.Command, args []string) {
 
@@ -67,7 +84,12 @@ var genLeafCmd = &cobra.Command{
   Use: "leaf",
   Short: "Generate a Colonize Leaf in your project",
   Long: `
-Placeholder text
+Create a Colonize Leaf underneath the current Colonize branch. This will
+create the leaf directory, a main.tf file inside the leaf, and append the
+leaf name to the parent branches build order file.
+
+Example:
+colonize generate leaf myleaf
   `,
   Run: func(cmd *cobra.Command, args []string) {
 
