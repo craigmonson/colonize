@@ -14,7 +14,7 @@ import (
 var _ = Describe("Init", func() {
 
   Describe("Run", func() {
-    var conf config.ColonizeConfig
+    var conf config.Config
     var mLog *log_mock.MockLog
     var err error
 
@@ -29,7 +29,7 @@ var _ = Describe("Init", func() {
 
     It("should setup config data w/ defaults", func() {
 
-      defaults := reflect.ValueOf(&config.ColonizeConfigFileDefaults).Elem()
+      defaults := reflect.ValueOf(&config.ConfigFileDefaults).Elem()
       actuals := reflect.ValueOf(&conf.ConfigFile).Elem()
 
       for i := 0; i< defaults.NumField(); i++ {

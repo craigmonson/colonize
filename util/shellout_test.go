@@ -17,7 +17,7 @@ type mockCmd struct {
 
 func (c *mockCmd) CombinedOutput() ([]byte, error) {
 	c.callCount++
-	return []byte("test"),nil
+	return []byte("test"), nil
 }
 
 // NOTE: this is actually testing the 'test' directory in the root of the
@@ -48,7 +48,7 @@ var _ = Describe("util/shellout", func() {
 	Describe("RunCmd", func() {
 		var origFunc func(string, ...string) Cmder
 		var err error
-                var output string
+		var output string
 		var mocked *mockCmd
 
 		BeforeEach(func() {
@@ -59,7 +59,7 @@ var _ = Describe("util/shellout", func() {
 				return mocked
 			}
 
-			err,output = RunCmd("ls", "-l")
+			err, output = RunCmd("ls", "-l")
 
 		})
 		AfterEach(func() {
@@ -74,8 +74,8 @@ var _ = Describe("util/shellout", func() {
 			Ω(mocked.callCount).To(Equal(1))
 		})
 
-                It("should have an output", func() {
-                        Ω(output).ShouldNot(BeEmpty())
-                })
+		It("should have an output", func() {
+			Ω(output).ShouldNot(BeEmpty())
+		})
 	})
 })

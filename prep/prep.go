@@ -12,13 +12,7 @@ import (
 	"github.com/craigmonson/colonize/util"
 )
 
-func Run(c *config.ColonizeConfig, l log.Logger) error {
-	return runLeaf(c, l)
-}
-
-func runLeaf(c *config.ColonizeConfig, l log.Logger) error {
-	os.Chdir(c.TmplPath)
-
+func Run(c *config.Config, l log.Logger, args interface{}) error {
 	l.Log("Removing .terraform directory...")
 	err := os.RemoveAll(util.PathJoin(c.TmplPath, ".terraform"))
 	if err != nil {
@@ -55,7 +49,7 @@ func runLeaf(c *config.ColonizeConfig, l log.Logger) error {
 	return nil
 }
 
-func BuildCombinedValsFile(c *config.ColonizeConfig) error {
+func BuildCombinedValsFile(c *config.Config) error {
 	combined, err := combineFiles(c.WalkableValPaths)
 	if err != nil {
 		return err
@@ -70,7 +64,7 @@ func BuildCombinedValsFile(c *config.ColonizeConfig) error {
 	return writeCombinedFile(c.CombinedVarsFilePath, valVars, 0664)
 }
 
-func BuildCombinedTfFile(c *config.ColonizeConfig) error {
+func BuildCombinedTfFile(c *config.Config) error {
 	// get list of files to combine  they can be any tf files
 	tfFiles := findTfFilesToCombine(c.WalkableTfPaths)
 	envSpecific := findEnvSpecificTfFilesToCombine(c)
@@ -83,7 +77,7 @@ func BuildCombinedTfFile(c *config.ColonizeConfig) error {
 	return writeCombinedFile(c.CombinedTfFilePath, combined, 0664)
 }
 
-func BuildCombinedDerivedFiles(c *config.ColonizeConfig) error {
+func BuildCombinedDerivedFiles(c *config.Config) error {
 	combined, err := combineFiles(c.WalkableDerivedPaths)
 	if err != nil {
 		return err
@@ -101,7 +95,7 @@ func BuildCombinedDerivedFiles(c *config.ColonizeConfig) error {
 	return writeCombinedFile(c.CombinedDerivedVarsFilePath, derVars, 0664)
 }
 
-func BuildRemoteFile(c *config.ColonizeConfig) error {
+func BuildRemoteFile(c *config.Config) error {
 	valFile, err := getOneValsFile(c)
 	if err != nil {
 		return err
@@ -129,7 +123,7 @@ func findTfFilesToCombine(dirPaths []string) []string {
 	return combineable
 }
 
-func findEnvSpecificTfFilesToCombine(c *config.ColonizeConfig) []string {
+func findEnvSpecificTfFilesToCombine(c *config.Config) []string {
 	combineable := []string{}
 	fileList, _ := ioutil.ReadDir(c.OriginPath)
 	// add environment specific files
@@ -192,11 +186,11 @@ func writeCombinedFile(path string, content []byte, mode os.FileMode) error {
 	return ioutil.WriteFile(path, content, mode)
 }
 
-func getConfigAsVariables(c *config.ColonizeConfig) []byte {
+func getConfigAsVariables(c *config.Config) []byte {
 	return getListAsVariables(getConfDerivedVarList(c))
 }
 
-func getConfigAsValues(c *config.ColonizeConfig) []byte {
+func getConfigAsValues(c *config.Config) []byte {
 	output := ""
 	for _, ary := range getConfDerivedVarList(c) {
 		// foo = "bar"
@@ -206,7 +200,7 @@ func getConfigAsValues(c *config.ColonizeConfig) []byte {
 	return []byte(output)
 }
 
-func getDerivedAsVariables(c *config.ColonizeConfig) []byte {
+func getDerivedAsVariables(c *config.Config) []byte {
 	combined, err := combineFiles(c.WalkableDerivedPaths)
 	if err != nil {
 		panic(err)
@@ -242,7 +236,7 @@ func getContentAsVarList(content []byte) [][2]string {
 // we print it out... with a map, there's no guarantee of order.  There's no
 // functional need to do this for terraform et al... just trying to keep it
 // nice for the user.
-func getConfDerivedVarList(c *config.ColonizeConfig) [][2]string {
+func getConfDerivedVarList(c *config.Config) [][2]string {
 	return [][2]string{
 		[2]string{"environment", c.Environment},
 		[2]string{"origin_path", c.OriginPath},
@@ -261,7 +255,7 @@ func subDerivedWithVariables(content, derived []byte) []byte {
 	return derived
 }
 
-func getOneValsFile(c *config.ColonizeConfig) ([]byte, error) {
+func getOneValsFile(c *config.Config) ([]byte, error) {
 	combined, err := ioutil.ReadFile(c.CombinedValsFilePath)
 	if err != nil {
 		return nil, err

@@ -26,7 +26,10 @@ $ colonize apply
 			Log.Log(err.Error())
 			os.Exit(-1)
 		}
-		err = apply.Run(conf, Log, SkipRemote, RemoteStateAfterApply)
+		err = Run(apply.Run, conf, Log, false, apply.RunArgs{
+			SkipRemote:            SkipRemote,
+			RemoteStateAfterApply: RemoteStateAfterApply,
+		})
 		if err != nil {
 			Log.Log("Apply failed to run: " + err.Error())
 			os.Exit(-1)

@@ -25,8 +25,9 @@ $ colonize destroy -e dev`,
 			os.Exit(-1)
 		}
 
-                err,output := destroy.Run(conf, Log, SkipRemote)
-                Log.Log(output)
+		err = Run(destroy.Run, conf, Log, true, destroy.RunArgs{
+			SkipRemote: SkipRemote,
+		})
 
 		if err != nil {
 			Log.Log("Destroy failed to run: " + err.Error())

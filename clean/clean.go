@@ -1,21 +1,12 @@
 package clean
 
 import (
-	//	"bytes"
-	//	//"fmt"
-	//	"io/ioutil"
-	"os"
-	//	"regexp"
-	//	"strings"
-	//
 	"github.com/craigmonson/colonize/config"
 	"github.com/craigmonson/colonize/log"
 	"github.com/craigmonson/colonize/util"
 )
 
-func Run(c *config.ColonizeConfig, l log.Logger) error {
-	os.Chdir(c.TmplPath)
-
+func Run(c *config.Config, l log.Logger, args interface{}) error {
 	l.Log("Cleaning up")
 	filesToClean := []string{
 		c.CombinedValsFilePath,
@@ -32,8 +23,8 @@ func Run(c *config.ColonizeConfig, l log.Logger) error {
 	}
 
 	for _, file := range filesToClean {
-		l.Log("rm -f " + file)
-		util.RunCmd("rm", "-f", file)
+		l.Log("rm -rf " + file)
+		util.RunCmd("rm", "-rf", file)
 	}
 
 	return nil
