@@ -18,7 +18,7 @@ type RunArgs struct {
 }
 
 
-func Run(c *config.ColonizeConfig, l log.Logger, args interface{}) error {
+func Run(c *config.Config, l log.Logger, args interface{}) error {
 
   runArgs := args.(RunArgs)
   l.Log("Creating Branch: " + runArgs.Name)
@@ -26,8 +26,7 @@ func Run(c *config.ColonizeConfig, l log.Logger, args interface{}) error {
   os.Chdir(c.TmplPath)
   os.Mkdir(runArgs.Name, 0755)
 
-  // TODO: build_order.txt file from config struct (needs `run-on-branches` branch)
-  parent_build_order,err := os.OpenFile("build_order.txt", os.O_APPEND|os.O_WRONLY, 0664)
+  parent_build_order,err := os.OpenFile(c.ConfigFile.Branch_Order_File, os.O_APPEND|os.O_WRONLY, 0664)
   if err != nil {
     l.Log(fmt.Sprintf("Failed to add branch '%s' to '%s'", runArgs.Name, "build_order.txt"))
     os.Exit(-1)
@@ -44,8 +43,7 @@ func Run(c *config.ColonizeConfig, l log.Logger, args interface{}) error {
     util.Touch(c.ConfigFile.Environments_Dir,path.Base(match))
   }
 
-  // TODO: build_order.txt file from config struct (needs `run-on-branches` branch)
-  build_order,err := os.Create("build_order.txt")
+  build_order,err := os.Create(c.ConfigFile.Branch_Order_File)
   if err != nil {
     return err
   }

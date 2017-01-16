@@ -112,8 +112,7 @@ colonize generate leaf myleaf
       os.Exit(-1)
     }
 
-    // TODO: Pull file name from config struct (requires run-on-branches code)
-    build_order,err := os.OpenFile("build_order.txt", os.O_APPEND|os.O_WRONLY, 0664)
+    build_order,err := os.OpenFile(conf.ConfigFile.Branch_Order_File, os.O_APPEND|os.O_WRONLY, 0664)
     if err != nil {
       Log.Log(fmt.Sprintf("Failed to add leaf '%s' to '%s'", name, "build_order.txt"))
       os.Exit(-1)

@@ -42,12 +42,13 @@ var _ = BeforeSuite(func() {
   util.Touch(path.Join(test_dir,"env"),"dev.tfvars")
   util.Touch(path.Join(test_dir,"env"),"prod.tfvars")
 
-  Run(&config.ColonizeConfig{
+  Run(&config.Config{
       RootPath: test_dir,
       TmplPath: test_dir,
 
-      ConfigFile: config.ColonizeConfigFile{
+      ConfigFile: config.ConfigFile{
         Environments_Dir: "env",
+        Branch_Order_File: "build_order.txt",
       },
     }, log.Log{}, RunArgs{
     Name:  "testbranch",

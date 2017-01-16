@@ -13,7 +13,7 @@ type RunArgs struct {
   BuildOrder *os.File
 }
 
-func Run(c *config.ColonizeConfig, l log.Logger, args interface{}) error {
+func Run(c *config.Config, l log.Logger, args interface{}) error {
   runArgs := args.(RunArgs)
   l.Log("Creating Leaf: " + runArgs.Name)
 
