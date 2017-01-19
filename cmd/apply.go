@@ -21,7 +21,7 @@ Example usage to apply changes:
 $ colonize apply
         `,
 	Run: func(cmd *cobra.Command, args []string) {
-		conf, err := GetConfig(false)
+		conf, err := GetConfig(true)
 		if err != nil {
 			Log.Log(err.Error())
 			os.Exit(-1)
