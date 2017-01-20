@@ -10,7 +10,7 @@ import (
 
 var cleanCmd = &cobra.Command{
 	Use:   "clean",
-	Short: "Removes all Colonize prep data",
+	Short: "Removes all Colonize prep data, and .terraform data",
 	Long: `
 This command will remove all temproary and derived files that Colonize
 has created, via its "prep" command. This can be run at the leaf or the

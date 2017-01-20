@@ -15,10 +15,17 @@ var applyCmd = &cobra.Command{
 This command will perform a "terraform apply" command on your project for the
 existing Terraform plan. In effect, this will create/update/remove any managed
 resources according to the output of the "plan" command, for the given leaf
-or branch that apply command is run under
+or branch that apply command is run under.  You may also run this command alone,
+and a plan will be executed before the apply.
 
-Example usage to apply changes:
-$ colonize apply
+# Example usage to apply changes:
+$ colonize apply --environment dev
+
+# Example usage to apply changes but skip setting up the remote
+$ colonize apply --environment dev --skip-remote
+
+# Example usage to apply changes, skip initial remote sync, then sync after.
+$ colonize apply --environment dev --skip-remote --remote-state-after-apply
         `,
 	Run: func(cmd *cobra.Command, args []string) {
 		conf, err := GetConfig(true)

@@ -17,8 +17,14 @@ This command will perform a "terraform plan" command on your project for the
 specified environment. This will generate a plan of changes that will be be
 applied to your environment when the "apply" command is run.
 
-Example usage to plan the "dev" environment:
+# Example usage to plan the "dev" environment:
 $ colonize plan -e dev
+
+# Plan, but don't sync to remote
+$ colonize plan -e dev --skip-remote
+
+# Plan, skip initial remote sync, but sync after apply has finished
+$ colonize plan -e dev --skip-remote --remote-state-after-apply
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		conf, err := GetConfig(true)

@@ -49,7 +49,6 @@ func GetConfig(requireEnvironment bool) (*config.Config, error) {
 	return config, err
 }
 
-
 // Execute adds all child commands to the root command sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
@@ -74,6 +73,6 @@ func init() {
 	// when this action is called directly.
 	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	RootCmd.PersistentFlags().BoolVarP(&SkipRemote, "skip_remote", "r", false, "skip execution of remote configuration.")
-	RootCmd.PersistentFlags().BoolVarP(&RemoteStateAfterApply, "remote_state_after_apply", "a", false, "Run remote state after terraform apply (if it was skipped).")
+	RootCmd.PersistentFlags().BoolVarP(&SkipRemote, "skip-remote", "r", false, "skip execution of remote configuration.")
+	RootCmd.PersistentFlags().BoolVarP(&RemoteStateAfterApply, "remote-state-after-apply", "a", false, "Run remote state after terraform apply (if it was skipped).")
 }
