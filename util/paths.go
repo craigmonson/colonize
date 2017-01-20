@@ -93,3 +93,9 @@ func fileExists(p string) bool {
 
 	return false
 }
+
+func Touch(p string, n string) error {
+  fn, err := os.Create(path.Join(p,n))
+  defer fn.Close()
+  return err
+}

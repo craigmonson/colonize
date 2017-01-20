@@ -383,6 +383,60 @@ stack.  It does **not** need an apply.
 files that are created in the ```prep``` step.  This happens regardless if
 a destroy or apply were done before hand.
 
+### ```colonize generate <resource> [options]```
+
+The **generate** command is used to provide convienience to generating Colonize
+resources and project structures. **Generate** provides sub-commands for each
+`resource-type` to create.
+
+
+#### ```colonize generate branch <name> [options]```
+
+The **branch** generation sub-command is used to generate a Colonize branch, including
+build order file, environment directory, environment tfvars, and optionally a list
+of leafs underneath the branch.
+
+The following command:
+
+`$ colonize generate branch myapp --leafs security_groups,database,instances`
+
+Will generate the following branch & leaf structures
+```
+myapp
+├── build_order.txt
+├── database
+│   └── main.tf
+├── env
+│   ├── dev.tfvars
+│   ├── test.tfvars
+│   └── prod.tfvars
+├── instances
+│   └── main.tf
+└── security_groups
+    └── main.tf
+```
+
+#### ```colonize generate leaf <name>```
+
+The branch generation sub-command is used to generate a Colonize branch, including
+build order file, environment directory, environment tfvars, and optionally a list
+of leafs underneath the branch. When using the `generate branch` command with the
+`--leafs` option, this command is internally called for each leaf.
+
+The following command
+
+`$ colonize generate leaf myleaf`
+
+Will generate the following structure in the `mybranch` branch
+```
+mybranch
+├── build_order.txt
+├── env
+└── myleaf
+    └── main.tf
+```
+
+
 ## CHANGELOG ##
 
   * 0.0.0 - still in development.
