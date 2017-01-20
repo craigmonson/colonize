@@ -35,12 +35,12 @@ var _ = Describe("Clean", func() {
 			})
 
 			It("should remove the files", func() {
-				Ω(um.MCmd.Cmd).To(MatchRegexp("rm -f "))
+				Ω(um.MCmd.Cmd).To(MatchRegexp("rm -rf "))
 			})
 
 			It("should log some stuff", func() {
 				Ω(mLog.Output).To(MatchRegexp("Cleaning up"))
-				Ω(mLog.Output).To(MatchRegexp("rm -f "))
+				Ω(mLog.Output).To(MatchRegexp("rm -rf "))
 			})
 		})
 	})
