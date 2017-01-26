@@ -1,12 +1,20 @@
 package cmd
 
 import (
+	"bufio"
 	"os"
 
 	"github.com/spf13/cobra"
 
 	"github.com/craigmonson/colonize/destroy"
 )
+
+var yesToDestroy bool
+
+const WARNING_MSG string = `All managed infrastructure will be deleted.
+There is no undo. Only entering 'yes' will confirm this operation.
+
+Do you wish to proceed with destroy: `
 
 var destroyCmd = &cobra.Command{
 	Use:   "destroy",
@@ -26,6 +34,17 @@ $ colonize destroy -e dev
 			os.Exit(-1)
 		}
 
+		if !yesToDestroy {
+			scan := bufio.NewScanner(os.Stdin)
+			Log.Print(WARNING_MSG)
+			scan.Scan()
+
+			if scan.Text() != "yes" {
+				Log.Log("Destroy operation cancelled by user")
+				os.Exit(0)
+			}
+		}
+
 		err = Run(destroy.Run, conf, Log, true, destroy.RunArgs{
 			SkipRemote: SkipRemote,
 		})
@@ -38,5 +57,12 @@ $ colonize destroy -e dev
 }
 
 func init() {
+	destroyCmd.Flags().BoolVarP(
+		&yesToDestroy,
+		"accept",
+		"y",
+		false,
+		"bypass 'accept' prompt by automatically accepting the destruction",
+	)
 	RootCmd.AddCommand(destroyCmd)
 }
