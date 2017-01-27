@@ -24,7 +24,8 @@ var RootCmd = &cobra.Command{
 	Long: `
 Colonize is a configurable, albeit opinionated way to organize and manage your
 terraform templates. It revolves around the idea of environments, and allows
-you to organize templates, and template data around that common idiom.
+you to organize templates, and template data around that common organizational
+structure.
 
 Once it's been configured, it allows for hierarical templates and variables,
 and the ability to organize them in a defined manageable way.`,

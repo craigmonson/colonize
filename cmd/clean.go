@@ -14,7 +14,8 @@ var cleanCmd = &cobra.Command{
 	Long: `
 This command will remove all temproary and derived files that Colonize
 has created, via its "prep" command. This can be run at the leaf or the
-branch level.
+branch level.  Note that this will also remove the .terraform directory, so
+all module and state data will be removed.
 
 Example usage to clean a project:
 $ colonize clean

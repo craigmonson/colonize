@@ -19,10 +19,11 @@ terraform for the given environment <env>  Note that colonize doesn't do
 anything "special" beyond creating files that terraform will consume.  You
 can safely skip the other colonize commands (prep/apply/destroy) and run ANY
 terraform commands "by hand" after running prep.  In fact, while debugging
-your template code, you may find that patter very helpful.
+your template code, you may find that pattern very helpful.
 
 Note that it can be run on it's own, however, it is run automatically by
-running the plan/destroy commands.
+running the plan/destroy commands, as there is no equivalent command in
+terraform.
 
 # Example preparing a colonization
 $ colonize prep -e dev
