@@ -1,13 +1,13 @@
 package generate_test
 
 import (
-  . "github.com/onsi/ginkgo"
-  . "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 
-  "testing"
+	"testing"
 )
 
 func TestPrep(t *testing.T) {
-  RegisterFailHandler(Fail)
-  RunSpecs(t, "Generate Suite")
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Generate Suite")
 }
