@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"os"
 
 	"github.com/craigmonson/colonize/prep"
 )
@@ -31,14 +30,14 @@ $ colonize prep -e dev
 	Run: func(cmd *cobra.Command, args []string) {
 		conf, err := GetConfig(true)
 		if err != nil {
-			Log.Log(err.Error())
-			os.Exit(-1)
+			CompleteFail(err.Error())
 		}
 		err = Run("PREP", prep.Run, conf, Log, false, nil)
 		if err != nil {
-			Log.Log("Prep Failed to Run: " + err.Error())
-			os.Exit(-1)
+			CompleteFail("Prep Failed to Run: " + err.Error())
 		}
+
+		CompleteSucceed()
 	},
 }
 

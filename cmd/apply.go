@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 
 	"github.com/craigmonson/colonize/apply"
@@ -30,17 +28,18 @@ $ colonize apply --environment dev --skip-remote --remote-state-after-apply
 	Run: func(cmd *cobra.Command, args []string) {
 		conf, err := GetConfig(true)
 		if err != nil {
-			Log.Log(err.Error())
-			os.Exit(-1)
+			CompleteFail(err.Error())
 		}
+
 		err = Run("APPLY", apply.Run, conf, Log, false, apply.RunArgs{
 			SkipRemote:            SkipRemote,
 			RemoteStateAfterApply: RemoteStateAfterApply,
 		})
 		if err != nil {
-			Log.Log("Apply failed to run: " + err.Error())
-			os.Exit(-1)
+			CompleteFail("Apply failed to run: " + err.Error())
 		}
+
+		CompleteSucceed()
 	},
 }
 

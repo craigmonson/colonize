@@ -1,11 +1,10 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 
 	"github.com/craigmonson/colonize/plan"
+	"github.com/craigmonson/colonize/prep"
 )
 
 // planCmd represents the plan command
@@ -29,8 +28,12 @@ $ colonize plan -e dev --skip-remote --remote-state-after-apply
 	Run: func(cmd *cobra.Command, args []string) {
 		conf, err := GetConfig(true)
 		if err != nil {
-			Log.Log(err.Error())
-			os.Exit(-1)
+			CompleteFail(err.Error())
+		}
+
+		err = Run("PREP", prep.Run, conf, Log, false, nil)
+		if err != nil {
+			CompleteFail("Prep failed to run: " + err.Error())
 		}
 
 		err = Run("PLAN", plan.Run, conf, Log, false, plan.RunArgs{
@@ -38,9 +41,10 @@ $ colonize plan -e dev --skip-remote --remote-state-after-apply
 		})
 
 		if err != nil {
-			Log.Log("Plan failed to run: " + err.Error())
-			os.Exit(-1)
+			CompleteFail("Plan failed to run: " + err.Error())
 		}
+
+		CompleteSucceed()
 	},
 }
 
