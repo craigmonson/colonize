@@ -25,22 +25,17 @@ func Run(c *config.Config, l log.Logger, args interface{}) error {
 		l.Log("Skipping remote setup")
 	} else {
 		l.Log("Running remote setup")
-		// why is this being run twice?  accident?
-		//util.RunCmd(c.CombinedRemoteFilePath)
-		_, output := util.RunCmd(c.CombinedRemoteFilePath)
-		l.Log(output)
+		util.RunCmd(c.CombinedRemoteFilePath)
 	}
 
 	l.Log("Executing terraform apply")
-	err, output := util.RunCmd(
+	err := util.RunCmd(
 		"terraform",
 		"apply",
 		"-parallelism", "1",
 		"-var-file", c.CombinedValsFilePath,
 		"-var-file", c.CombinedDerivedValsFilePath,
 	)
-
-	l.Log(output)
 
 	if runArgs.SkipRemote {
 		if runArgs.RemoteStateAfterApply {
@@ -59,6 +54,5 @@ func remoteUpdate(c *config.Config, l log.Logger) {
 	l.Log("Running remote after apply")
 	os.Rename("terraform.tfstate", ".terraform/terraform.tfstate")
 	util.RunCmd("rm terraform.tfstate.backup")
-	_, output := util.RunCmd(c.CombinedRemoteFilePath)
-	l.Log(output)
+	util.RunCmd(c.CombinedRemoteFilePath)
 }
