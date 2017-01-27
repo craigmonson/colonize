@@ -26,7 +26,7 @@ $ colonize clean
 			Log.Log(err.Error())
 			os.Exit(-1)
 		}
-		err = Run(clean.Run, conf, Log, false, nil)
+		err = Run("CLEAN", clean.Run, conf, Log, false, nil)
 		if err != nil {
 			Log.Log("Clean failed to run: " + err.Error())
 			os.Exit(-1)

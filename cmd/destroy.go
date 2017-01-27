@@ -48,7 +48,7 @@ $ colonize destroy -e dev -y
 			}
 		}
 
-		err = Run(destroy.Run, conf, Log, true, destroy.RunArgs{
+		err = Run("DESTROY", destroy.Run, conf, Log, true, destroy.RunArgs{
 			SkipRemote: SkipRemote,
 		})
 

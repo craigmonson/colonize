@@ -33,7 +33,7 @@ $ colonize apply --environment dev --skip-remote --remote-state-after-apply
 			Log.Log(err.Error())
 			os.Exit(-1)
 		}
-		err = Run(apply.Run, conf, Log, false, apply.RunArgs{
+		err = Run("APPLY", apply.Run, conf, Log, false, apply.RunArgs{
 			SkipRemote:            SkipRemote,
 			RemoteStateAfterApply: RemoteStateAfterApply,
 		})

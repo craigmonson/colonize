@@ -34,7 +34,7 @@ $ colonize prep -e dev
 			Log.Log(err.Error())
 			os.Exit(-1)
 		}
-		err = Run(prep.Run, conf, Log, false, nil)
+		err = Run("PREP", prep.Run, conf, Log, false, nil)
 		if err != nil {
 			Log.Log("Prep Failed to Run: " + err.Error())
 			os.Exit(-1)

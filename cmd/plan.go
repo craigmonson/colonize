@@ -33,7 +33,7 @@ $ colonize plan -e dev --skip-remote --remote-state-after-apply
 			os.Exit(-1)
 		}
 
-		err = Run(plan.Run, conf, Log, false, plan.RunArgs{
+		err = Run("PLAN", plan.Run, conf, Log, false, plan.RunArgs{
 			SkipRemote: SkipRemote,
 		})
 
