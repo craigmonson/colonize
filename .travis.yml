@@ -3,4 +3,8 @@ language: go
 go:
   - 1.7.x
 
-script: ./test.sh
+install: make install-deps
+
+script:
+  - make test
+  - make build
