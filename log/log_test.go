@@ -37,4 +37,28 @@ var _ = Describe("Log", func() {
 			Ω(out).To(Equal("something\n"))
 		})
 	})
+
+	Describe("Print", func() {
+		It("should log something", func() {
+			log.Print("something")
+			out := getStdoutStr()
+			Ω(out).To(Equal("something"))
+		})
+	})
+
+	Describe("LogPretty", func() {
+		It("should log something", func() {
+			log.LogPretty("something")
+			out := getStdoutStr()
+			Ω(out).To(Equal("something\n"))
+		})
+	})
+
+	Describe("PrintPretty", func() {
+		It("should log something", func() {
+			log.PrintPretty("something")
+			out := getStdoutStr()
+			Ω(out).To(Equal("something"))
+		})
+	})
 })
