@@ -6,7 +6,7 @@ import (
 
 type Logger interface {
 	Log(string)
-        Print(string)
+	Print(string)
 }
 
 type Log struct {

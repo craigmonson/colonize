@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var RootFiles = []string {".colonize.yaml", ".colonize.yml"}
+var RootFiles = []string{".colonize.yaml", ".colonize.yml"}
 
 // search through myPath till you find the config file, and return the path to
 // it.
@@ -15,7 +15,7 @@ func FindCfgPath(myPath string) (string, error) {
 	// cleanup and combine config file and search path
 	cleanedP := path.Clean(myPath)
 
-	for _,rootfile := range RootFiles {
+	for _, rootfile := range RootFiles {
 		fSearch := path.Join(cleanedP, rootfile)
 
 		// if the file exists, return the full path to the config file.
@@ -95,7 +95,7 @@ func fileExists(p string) bool {
 }
 
 func Touch(p ...string) error {
-  fn, err := os.Create(path.Join(p...))
-  defer fn.Close()
-  return err
+	fn, err := os.Create(path.Join(p...))
+	defer fn.Close()
+	return err
 }

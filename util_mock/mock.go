@@ -15,7 +15,7 @@ type MockCmd struct {
 
 func (c *MockCmd) CombinedOutput() ([]byte, error) {
 	c.CallCount++
-	return []byte("test"),nil
+	return []byte("test"), nil
 }
 
 var MCmd = &MockCmd{}
