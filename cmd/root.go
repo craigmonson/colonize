@@ -9,6 +9,7 @@ import (
 
 	"github.com/craigmonson/colonize/config"
 	"github.com/craigmonson/colonize/log"
+	"github.com/craigmonson/colonize/util"
 )
 
 var Environment string
@@ -38,8 +39,13 @@ func GetConfig(requireEnvironment bool) (*config.Config, error) {
 		return nil, err
 	}
 
-	if requireEnvironment && Environment == "" {
-		return nil, errors.New("environment can not be empty")
+	if requireEnvironment {
+		if Environment == "" {
+			return nil, errors.New("environment can not be empty")
+		}
+		Log.Log(util.PadRight(fmt.Sprintf("\nColonize [%s] ", Environment), "*", 79))
+	} else {
+		Log.Log(util.PadRight("\nColonize ", "*", 79))
 	}
 
 	config, err := config.LoadConfigInTree(cwd, Environment)
