@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/fatih/color"
+
 	"github.com/craigmonson/colonize/config"
 	"github.com/craigmonson/colonize/log"
 	"github.com/craigmonson/colonize/util"
@@ -16,7 +18,7 @@ func Run(name string, f func(*config.Config, log.Logger, interface{}) error, c *
 		return RunBranch(name, f, c, l, reverse, args)
 	}
 
-	l.Log(util.PadRight(fmt.Sprintf("\n%s [%s] ", name, c.TmplPath), "*", 79))
+	l.LogPretty(util.PadRight(fmt.Sprintf("\n%s [%s] ", name, c.TmplPath), "*", 79), color.Bold)
 	return f(c, l, args)
 }
 

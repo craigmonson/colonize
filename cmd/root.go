@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	"github.com/craigmonson/colonize/config"
@@ -43,9 +44,9 @@ func GetConfig(requireEnvironment bool) (*config.Config, error) {
 		if Environment == "" {
 			return nil, errors.New("environment can not be empty")
 		}
-		Log.Log(util.PadRight(fmt.Sprintf("\nCOLONIZE [%s] ", Environment), "*", 79))
+		Log.LogPretty(util.PadRight(fmt.Sprintf("\nCOLONIZE [%s] ", Environment), "*", 79), color.Bold)
 	} else {
-		Log.Log(util.PadRight("\nCOLONIZE ", "*", 79))
+		Log.LogPretty(util.PadRight("\nCOLONIZE ", "*", 79), color.Bold)
 	}
 
 	config, err := config.LoadConfigInTree(cwd, Environment)
@@ -66,14 +67,14 @@ func Execute() {
 }
 
 func CompleteSucceed() {
-	Log.Log(util.PadRight("\nRECAP ", "*", 79))
-	Log.Log("Completed successfully!")
+	Log.LogPretty(util.PadRight("\nRECAP ", "*", 79), color.Bold)
+	Log.LogPretty("Completed successfully!", color.FgGreen)
 	os.Exit(0)
 }
 
 func CompleteFail(err string) {
-	Log.Log(util.PadRight("\nRECAP ", "*", 79))
-	Log.Log(err)
+	Log.LogPretty(util.PadRight("\nRECAP ", "*", 79), color.Bold)
+	Log.LogPretty(err, color.FgRed)
 	os.Exit(-1)
 }
 
