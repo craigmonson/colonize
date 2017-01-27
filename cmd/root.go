@@ -43,9 +43,9 @@ func GetConfig(requireEnvironment bool) (*config.Config, error) {
 		if Environment == "" {
 			return nil, errors.New("environment can not be empty")
 		}
-		Log.Log(util.PadRight(fmt.Sprintf("\nColonize [%s] ", Environment), "*", 79))
+		Log.Log(util.PadRight(fmt.Sprintf("\nCOLONIZE [%s] ", Environment), "*", 79))
 	} else {
-		Log.Log(util.PadRight("\nColonize ", "*", 79))
+		Log.Log(util.PadRight("\nCOLONIZE ", "*", 79))
 	}
 
 	config, err := config.LoadConfigInTree(cwd, Environment)
@@ -63,6 +63,18 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(-1)
 	}
+}
+
+func CompleteSucceed() {
+	Log.Log(util.PadRight("\nRECAP ", "*", 79))
+	Log.Log("Completed successfully!")
+	os.Exit(0)
+}
+
+func CompleteFail(err string) {
+	Log.Log(util.PadRight("\nRECAP ", "*", 79))
+	Log.Log(err)
+	os.Exit(-1)
 }
 
 func init() {
