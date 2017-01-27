@@ -10,6 +10,7 @@ type Logger interface {
 	Log(string)
 	Print(string)
 	LogPretty(string, ...color.Attribute)
+	PrintPretty(string, ...color.Attribute)
 }
 
 type Log struct {
