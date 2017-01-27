@@ -48,7 +48,7 @@ var _ = Describe("Runner", func() {
 		Context("in reverse order", func() {
 			It("should make the correct calls", func() {
 				c, err := config.LoadConfigInTree(cwd+"/../test", "dev")
-                                err = Run("TEST", myRun, c, Log, true, nil)
+				err = Run("TEST", myRun, c, Log, true, nil)
 				Ω(r.callCount).To(Equal(3))
 				Ω(err).ToNot(HaveOccurred())
 				Ω(r.origin).To(MatchRegexp("../test/vpc"))

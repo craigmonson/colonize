@@ -1,13 +1,12 @@
 package cmd
 
 import (
-        "fmt"
+	"fmt"
 	"os"
 
 	"github.com/craigmonson/colonize/config"
 	"github.com/craigmonson/colonize/log"
-        "github.com/craigmonson/colonize/util"
-
+	"github.com/craigmonson/colonize/util"
 )
 
 // reverse is here because the destroy command will need to destroy stuff in
@@ -17,7 +16,7 @@ func Run(name string, f func(*config.Config, log.Logger, interface{}) error, c *
 		return RunBranch(name, f, c, l, reverse, args)
 	}
 
-        l.Log(util.PadRight(fmt.Sprintf("\n%s [%s] ", name, c.TmplPath),"*",79))
+	l.Log(util.PadRight(fmt.Sprintf("\n%s [%s] ", name, c.TmplPath), "*", 79))
 	return f(c, l, args)
 }
 
