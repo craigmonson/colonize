@@ -25,14 +25,11 @@ func Run(c *config.Config, l log.Logger, args interface{}) error {
 	}
 
 	l.Log("Executing terraform destroy")
-	err, out := util.RunCmd(
+	return util.RunCmd(
 		"terraform",
 		"destroy",
 		"-force",
 		"-var-file", c.CombinedValsFilePath,
 		"-var-file", c.CombinedDerivedValsFilePath,
 	)
-
-	l.Log(out)
-	return err
 }

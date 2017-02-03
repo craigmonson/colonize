@@ -1,11 +1,12 @@
 package util
 
 import (
+	"os"
 	"os/exec"
 )
 
 type Cmder interface {
-	CombinedOutput() ([]byte, error)
+	Run() error
 }
 
 type Cmd struct {
@@ -13,12 +14,13 @@ type Cmd struct {
 }
 
 var NewCmd = func(cmd string, arg ...string) Cmder {
-	return exec.Command(cmd, arg...)
+	newCmd := exec.Command(cmd, arg...)
+	newCmd.Stdout = os.Stdout
+	newCmd.Stderr = os.Stderr
+	return newCmd
 }
 
-func RunCmd(cmd string, arg ...string) (error, string) {
+func RunCmd(cmd string, arg ...string) error {
 	newCmd := NewCmd(cmd, arg...)
-	output, err := newCmd.CombinedOutput()
-
-	return err, string(output)
+	return newCmd.Run()
 }

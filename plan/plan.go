@@ -32,13 +32,12 @@ func Run(c *config.Config, l log.Logger, args interface{}) error {
 	l.Log(c.CombinedValsFilePath)
 	d, _ := os.Getwd()
 	l.Log(d)
-	err, out := util.RunCmd(
+	err := util.RunCmd(
 		"terraform",
 		"plan",
 		"-var-file", c.CombinedValsFilePath,
 		"-var-file", c.CombinedDerivedValsFilePath,
 		"-out", "terraform.tfplan",
 	)
-	l.Log(out)
 	return err
 }
