@@ -1,19 +1,8 @@
 language: go
 
-#go:
-#  - 1.7.x
-
-#install: make install-deps
-
-#script:
-#  - make test
-#  - make build
-
 before_install:
   - go get github.com/onsi/gomega
   - go get github.com/onsi/ginkgo/ginkgo
 
-
 script:
   - ginkgo -r --cover --trace --race --compilers=2
-
