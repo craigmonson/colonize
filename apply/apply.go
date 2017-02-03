@@ -1,13 +1,8 @@
 package apply
 
 import (
-	//	"bytes"
-	//	//"fmt"
-	//	"io/ioutil"
 	"os"
-	//	"regexp"
-	//	"strings"
-	//
+
 	"github.com/craigmonson/colonize/config"
 	"github.com/craigmonson/colonize/log"
 	"github.com/craigmonson/colonize/util"

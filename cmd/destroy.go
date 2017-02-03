@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/craigmonson/colonize/destroy"
+	"github.com/craigmonson/colonize/prep"
 )
 
 var yesToDestroy bool
@@ -33,8 +34,7 @@ $ colonize destroy -e dev -y
 	Run: func(cmd *cobra.Command, args []string) {
 		conf, err := GetConfig(true)
 		if err != nil {
-			Log.Log(err.Error())
-			os.Exit(-1)
+			CompleteFail(err.Error())
 		}
 
 		if !yesToDestroy {
@@ -43,19 +43,24 @@ $ colonize destroy -e dev -y
 			scan.Scan()
 
 			if scan.Text() != "yes" {
-				Log.Log("Destroy operation cancelled by user")
-				os.Exit(0)
+				CompleteFail("Destroy operation cancelled by user")
 			}
 		}
 
-		err = Run(destroy.Run, conf, Log, true, destroy.RunArgs{
+		err = Run("PREP", prep.Run, conf, Log, false, nil)
+		if err != nil {
+			CompleteFail("Prep failed to run: " + err.Error())
+		}
+
+		err = Run("DESTROY", destroy.Run, conf, Log, true, destroy.RunArgs{
 			SkipRemote: SkipRemote,
 		})
 
 		if err != nil {
-			Log.Log("Destroy failed to run: " + err.Error())
-			os.Exit(-1)
+			CompleteFail("Destroy failed to run: " + err.Error())
 		}
+
+		CompleteSucceed()
 	},
 }
 

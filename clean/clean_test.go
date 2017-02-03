@@ -39,8 +39,7 @@ var _ = Describe("Clean", func() {
 			})
 
 			It("should log some stuff", func() {
-				Ω(mLog.Output).To(MatchRegexp("Cleaning up"))
-				Ω(mLog.Output).To(MatchRegexp("rm -rf "))
+				Ω(mLog.Output).To(MatchRegexp("Deleting "))
 			})
 		})
 	})
