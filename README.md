@@ -1,5 +1,7 @@
 # Colonize #
 
+[![Build Status](https://travis-ci.org/craigmonson/colonize.svg?branch=master)](https://travis-ci.org/craigmonson/colonize)
+
 Colonize is a configurable, albeit opinionated way to organize and manage your
 terraform templates.  It revolves around the idea of environments, and allows
 you to organize templates, and template data around that common organizational

@@ -6,7 +6,8 @@ import (
 
 	. "github.com/craigmonson/colonize/cmd"
 	"github.com/craigmonson/colonize/config"
-	"github.com/craigmonson/colonize/log"
+	"github.com/craigmonson/colonize/log_mock"
+        "github.com/craigmonson/colonize/log"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -38,7 +39,7 @@ var _ = Describe("Runner", func() {
 		Context("in normal order", func() {
 			It("should make the correct calls", func() {
 				c, err := config.LoadConfigInTree(cwd+"/../test", "dev")
-				err = Run("TEST", myRun, c, Log, false, nil)
+				err = Run("TEST", myRun, c, &log_mock.MockLog{}, false, nil)
 				Ω(r.callCount).To(Equal(3))
 				Ω(err).ToNot(HaveOccurred())
 				Ω(r.origin).To(MatchRegexp("../test/microservices"))
@@ -48,7 +49,7 @@ var _ = Describe("Runner", func() {
 		Context("in reverse order", func() {
 			It("should make the correct calls", func() {
 				c, err := config.LoadConfigInTree(cwd+"/../test", "dev")
-				err = Run("TEST", myRun, c, Log, true, nil)
+				err = Run("TEST", myRun, c, &log_mock.MockLog{}, true, nil)
 				Ω(r.callCount).To(Equal(3))
 				Ω(err).ToNot(HaveOccurred())
 				Ω(r.origin).To(MatchRegexp("../test/vpc"))
@@ -58,7 +59,7 @@ var _ = Describe("Runner", func() {
 		Context("when run returns an error", func() {
 			It("should return an error", func() {
 				c, err := config.LoadConfigInTree(cwd+"/../test", "dev")
-				err = Run("TEST", myErrRun, c, Log, true, nil)
+				err = Run("TEST", myErrRun, c, &log_mock.MockLog{}, true, nil)
 				Ω(err).To(HaveOccurred())
 			})
 		})

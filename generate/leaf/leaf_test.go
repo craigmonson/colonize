@@ -7,7 +7,7 @@ import (
 
   "io/ioutil"
   "os"
-  "github.com/craigmonson/colonize/log"
+  "github.com/craigmonson/colonize/log_mock"
 )
 
 var test_dir string
@@ -38,7 +38,7 @@ var _ = BeforeSuite(func() {
     panic(err.Error())
   }
 
-  Run(nil, log.Log{}, RunArgs{
+  Run(nil, &log_mock.MockLog{}, RunArgs{
     Name: "test",
     BuildOrder: build_order,
   })
