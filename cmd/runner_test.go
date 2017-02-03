@@ -6,8 +6,8 @@ import (
 
 	. "github.com/craigmonson/colonize/cmd"
 	"github.com/craigmonson/colonize/config"
+	"github.com/craigmonson/colonize/log"
 	"github.com/craigmonson/colonize/log_mock"
-        "github.com/craigmonson/colonize/log"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

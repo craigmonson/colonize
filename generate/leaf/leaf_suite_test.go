@@ -1,13 +1,13 @@
 package leaf_test
 
 import (
-  . "github.com/onsi/ginkgo"
-  . "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 
-  "testing"
+	"testing"
 )
 
 func TestLeaf(t *testing.T) {
-  RegisterFailHandler(Fail)
-  RunSpecs(t, "Generate Leaf Suite")
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Generate Leaf Suite")
 }

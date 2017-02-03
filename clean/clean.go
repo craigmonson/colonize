@@ -24,7 +24,7 @@ func Run(c *config.Config, l log.Logger, args interface{}) error {
 	}
 
 	for _, file := range filesToClean {
-		l.Log(fmt.Sprintf("Deleting %s...",util.GetBasename(file)))
+		l.Log(fmt.Sprintf("Deleting %s...", util.GetBasename(file)))
 		util.RunCmd("rm", "-rf", file)
 	}
 
