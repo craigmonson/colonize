@@ -49,8 +49,7 @@ colonize generate branch mybranch --leafs myleaf1,myleaf2
 
 		err := generate.ValidateArgsLength("Branch", args, 1, 1)
 		if err != nil {
-			Log.Log(err.Error())
-			os.Exit(-1)
+			CompleteFail(err.Error())
 		}
 
 		name := args[0]
@@ -58,14 +57,12 @@ colonize generate branch mybranch --leafs myleaf1,myleaf2
 
 		err = generate.ValidateNameAvailable("Branch", name)
 		if err != nil {
-			Log.Log(err.Error())
-			os.Exit(-1)
+			CompleteFail(err.Error())
 		}
 
 		conf, err := GetConfig(false)
 		if err != nil {
-			Log.Log(err.Error())
-			os.Exit(-1)
+			CompleteFail(err.Error())
 		}
 
 		err = branch.Run(conf, Log, branch.RunArgs{
@@ -73,9 +70,10 @@ colonize generate branch mybranch --leafs myleaf1,myleaf2
 			Leafs: leafs,
 		})
 		if err != nil {
-			Log.Log("Generate Branch failed to run: " + err.Error())
-			os.Exit(-1)
+			CompleteFail("Generate Branch failed to run: " + err.Error())
 		}
+
+		CompleteSucceed()
 
 	},
 }
@@ -95,27 +93,23 @@ colonize generate leaf myleaf
 
 		err := generate.ValidateArgsLength("Leaf", args, 1, 1)
 		if err != nil {
-			Log.Log(err.Error())
-			os.Exit(-1)
+			CompleteFail(err.Error())
 		}
 
 		name := args[0]
 		err = generate.ValidateNameAvailable("Leaf", name)
 		if err != nil {
-			Log.Log(err.Error())
-			os.Exit(-1)
+			CompleteFail(err.Error())
 		}
 
 		conf, err := GetConfig(false)
 		if err != nil {
-			Log.Log(err.Error())
-			os.Exit(-1)
+			CompleteFail(err.Error())
 		}
 
 		build_order, err := os.OpenFile(conf.ConfigFile.Branch_Order_File, os.O_APPEND|os.O_WRONLY, 0664)
 		if err != nil {
-			Log.Log(fmt.Sprintf("Failed to add leaf '%s' to '%s'", name, "build_order.txt"))
-			os.Exit(-1)
+			CompleteFail(fmt.Sprintf("Failed to add leaf '%s' to '%s'", name, "build_order.txt"))
 		}
 		defer build_order.Close()
 
@@ -124,9 +118,10 @@ colonize generate leaf myleaf
 			BuildOrder: build_order,
 		})
 		if err != nil {
-			Log.Log("Generate Leaf failed to run: " + err.Error())
-			os.Exit(-1)
+			CompleteFail("Generate Leaf failed to run: " + err.Error())
 		}
+
+		CompleteSucceed()
 
 	},
 }

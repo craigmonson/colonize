@@ -1,24 +1,28 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
+
+	"github.com/fatih/color"
 
 	"github.com/craigmonson/colonize/config"
 	"github.com/craigmonson/colonize/log"
+	"github.com/craigmonson/colonize/util"
 )
 
 // reverse is here because the destroy command will need to destroy stuff in
 // reverse order.
-func Run(f func(*config.Config, log.Logger, interface{}) error, c *config.Config, l log.Logger, reverse bool, args interface{}) error {
+func Run(name string, f func(*config.Config, log.Logger, interface{}) error, c *config.Config, l log.Logger, reverse bool, args interface{}) error {
 	if c.IsBranch() {
-		return RunBranch(f, c, l, reverse, args)
+		return RunBranch(name, f, c, l, reverse, args)
 	}
 
-	l.Log("Running " + c.TmplPath)
+	l.LogPretty(util.PadRight(fmt.Sprintf("\n%s [%s] ", name, c.TmplPath), "*", 79), color.Bold)
 	return f(c, l, args)
 }
 
-func RunBranch(f func(*config.Config, log.Logger, interface{}) error, c *config.Config, l log.Logger, reverse bool, args interface{}) error {
+func RunBranch(name string, f func(*config.Config, log.Logger, interface{}) error, c *config.Config, l log.Logger, reverse bool, args interface{}) error {
 	buildPaths, err := c.GetBuildOrderPaths()
 	if err != nil {
 		return err
@@ -39,7 +43,7 @@ func RunBranch(f func(*config.Config, log.Logger, interface{}) error, c *config.
 			return err
 		}
 
-		if err := Run(f, newConf, l, reverse, args); err != nil {
+		if err := Run(name, f, newConf, l, reverse, args); err != nil {
 			return err
 		}
 	}

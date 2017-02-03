@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 
 	"github.com/craigmonson/colonize/clean"
@@ -23,14 +21,14 @@ $ colonize clean
 	Run: func(cmd *cobra.Command, args []string) {
 		conf, err := GetConfig(false)
 		if err != nil {
-			Log.Log(err.Error())
-			os.Exit(-1)
+			CompleteFail("Clean failed to run: " + err.Error())
 		}
-		err = Run(clean.Run, conf, Log, false, nil)
+		err = Run("CLEAN", clean.Run, conf, Log, false, nil)
 		if err != nil {
-			Log.Log("Clean failed to run: " + err.Error())
-			os.Exit(-1)
+			CompleteFail("Clean failed to run: " + err.Error())
 		}
+
+		CompleteSucceed()
 	},
 }
 

@@ -1,13 +1,14 @@
 package clean
 
 import (
+	"fmt"
+
 	"github.com/craigmonson/colonize/config"
 	"github.com/craigmonson/colonize/log"
 	"github.com/craigmonson/colonize/util"
 )
 
 func Run(c *config.Config, l log.Logger, args interface{}) error {
-	l.Log("Cleaning up")
 	filesToClean := []string{
 		c.CombinedValsFilePath,
 		c.CombinedVarsFilePath,
@@ -23,7 +24,7 @@ func Run(c *config.Config, l log.Logger, args interface{}) error {
 	}
 
 	for _, file := range filesToClean {
-		l.Log("rm -rf " + file)
+		l.Log(fmt.Sprintf("Deleting %s...",util.GetBasename(file)))
 		util.RunCmd("rm", "-rf", file)
 	}
 
