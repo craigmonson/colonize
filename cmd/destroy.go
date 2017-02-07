@@ -10,6 +10,13 @@ import (
 	"github.com/craigmonson/colonize/prep"
 )
 
+type DestroyFlags struct {
+	Environment string
+	SkipRemote  bool
+}
+
+var destroyFlags = DestroyFlags{}
+
 var yesToDestroy bool
 
 const WARNING_MSG string = `All managed infrastructure will be deleted.
@@ -32,7 +39,7 @@ $ colonize destroy -e dev
 $ colonize destroy -e dev -y
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		conf, err := GetConfig(true)
+		conf, err := GetConfig(destroyFlags.Environment)
 		if err != nil {
 			CompleteFail(err.Error())
 		}
@@ -53,7 +60,7 @@ $ colonize destroy -e dev -y
 		}
 
 		err = Run("DESTROY", destroy.Run, conf, Log, true, destroy.RunArgs{
-			SkipRemote: SkipRemote,
+			SkipRemote: destroyFlags.SkipRemote,
 		})
 
 		if err != nil {
@@ -65,6 +72,8 @@ $ colonize destroy -e dev -y
 }
 
 func init() {
+	addEnvironmentFlag(destroyCmd, &destroyFlags.Environment)
+	addSkipRemoteFlag(destroyCmd, &destroyFlags.SkipRemote)
 	destroyCmd.Flags().BoolVarP(
 		&yesToDestroy,
 		"accept",

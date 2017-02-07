@@ -60,7 +60,7 @@ colonize generate branch mybranch --leafs myleaf1,myleaf2
 			CompleteFail(err.Error())
 		}
 
-		conf, err := GetConfig(false)
+		conf, err := GetConfigWithoutEnvironment()
 		if err != nil {
 			CompleteFail(err.Error())
 		}
@@ -102,7 +102,7 @@ colonize generate leaf myleaf
 			CompleteFail(err.Error())
 		}
 
-		conf, err := GetConfig(false)
+		conf, err := GetConfigWithoutEnvironment()
 		if err != nil {
 			CompleteFail(err.Error())
 		}

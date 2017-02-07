@@ -15,7 +15,7 @@ var initCmd = &cobra.Command{
 	Long:  `This command is used to aid in the generation the .colonize.yaml configuration file and project directory structure.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		_, err := GetConfig(false)
+		_, err := GetConfigWithoutEnvironment()
 		if err == nil {
 			CompleteFail("Colonize project already initialized. Exiting.")
 		}

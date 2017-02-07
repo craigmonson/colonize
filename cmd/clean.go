@@ -19,7 +19,7 @@ Example usage to clean a project:
 $ colonize clean
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		conf, err := GetConfig(false)
+		conf, err := GetConfigWithoutEnvironment()
 		if err != nil {
 			CompleteFail("Clean failed to run: " + err.Error())
 		}
