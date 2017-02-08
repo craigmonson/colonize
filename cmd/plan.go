@@ -7,6 +7,13 @@ import (
 	"github.com/craigmonson/colonize/prep"
 )
 
+type PlanFlags struct {
+	Environment string
+	SkipRemote  bool
+}
+
+var planFlags = PlanFlags{}
+
 // planCmd represents the plan command
 var planCmd = &cobra.Command{
 	Use:   "plan",
@@ -26,7 +33,7 @@ $ colonize plan -e dev --skip-remote
 $ colonize plan -e dev --skip-remote --remote-state-after-apply
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		conf, err := GetConfig(true)
+		conf, err := GetConfig(planFlags.Environment)
 		if err != nil {
 			CompleteFail(err.Error())
 		}
@@ -37,7 +44,7 @@ $ colonize plan -e dev --skip-remote --remote-state-after-apply
 		}
 
 		err = Run("PLAN", plan.Run, conf, Log, false, plan.RunArgs{
-			SkipRemote: SkipRemote,
+			SkipRemote: planFlags.SkipRemote,
 		})
 
 		if err != nil {
@@ -49,5 +56,7 @@ $ colonize plan -e dev --skip-remote --remote-state-after-apply
 }
 
 func init() {
+	addEnvironmentFlag(planCmd, &planFlags.Environment)
+	addSkipRemoteFlag(planCmd, &planFlags.SkipRemote)
 	RootCmd.AddCommand(planCmd)
 }

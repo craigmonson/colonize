@@ -6,6 +6,14 @@ import (
 	"github.com/craigmonson/colonize/apply"
 )
 
+type ApplyFlags struct {
+	Environment           string
+	SkipRemote            bool
+	RemoteStateAfterApply bool
+}
+
+var applyFlags = ApplyFlags{}
+
 var applyCmd = &cobra.Command{
 	Use:   "apply",
 	Short: "Applies the Terraform plan to the target environment",
@@ -26,14 +34,14 @@ $ colonize apply --environment dev --skip-remote
 $ colonize apply --environment dev --skip-remote --remote-state-after-apply
         `,
 	Run: func(cmd *cobra.Command, args []string) {
-		conf, err := GetConfig(true)
+		conf, err := GetConfig(applyFlags.Environment)
 		if err != nil {
 			CompleteFail(err.Error())
 		}
 
 		err = Run("APPLY", apply.Run, conf, Log, false, apply.RunArgs{
-			SkipRemote:            SkipRemote,
-			RemoteStateAfterApply: RemoteStateAfterApply,
+			SkipRemote:            applyFlags.SkipRemote,
+			RemoteStateAfterApply: applyFlags.RemoteStateAfterApply,
 		})
 		if err != nil {
 			CompleteFail("Apply failed to run: " + err.Error())
@@ -44,5 +52,14 @@ $ colonize apply --environment dev --skip-remote --remote-state-after-apply
 }
 
 func init() {
+	addEnvironmentFlag(applyCmd, &applyFlags.Environment)
+	addSkipRemoteFlag(applyCmd, &applyFlags.SkipRemote)
+	applyCmd.Flags().BoolVarP(
+		&applyFlags.RemoteStateAfterApply,
+		"remote-state-after-apply",
+		"s",
+		false,
+		"Run remote state after terraform apply (if it was skipped).",
+	)
 	RootCmd.AddCommand(applyCmd)
 }

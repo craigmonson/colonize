@@ -6,6 +6,12 @@ import (
 	"github.com/craigmonson/colonize/prep"
 )
 
+type PrepFlags struct {
+	Environment string
+}
+
+var prepFlags = PrepFlags{}
+
 // prepCmd represents the prep command
 var prepCmd = &cobra.Command{
 	Use:   "prep",
@@ -28,7 +34,7 @@ terraform.
 $ colonize prep -e dev
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		conf, err := GetConfig(true)
+		conf, err := GetConfig(prepFlags.Environment)
 		if err != nil {
 			CompleteFail(err.Error())
 		}
@@ -42,5 +48,6 @@ $ colonize prep -e dev
 }
 
 func init() {
+	addEnvironmentFlag(prepCmd, &prepFlags.Environment)
 	RootCmd.AddCommand(prepCmd)
 }
