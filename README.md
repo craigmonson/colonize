@@ -446,8 +446,6 @@ mybranch
 
 ## CONTRIBUTORS ##
 
-  * A special thanks to [2ndwatch](http://2ndwatch.com/) for supporting this
-project!
   * Craig Monson
   * Joey Yore
   * Lars Cromley
