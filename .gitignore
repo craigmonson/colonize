@@ -40,3 +40,4 @@ colonize
 # state files
 *.tfstate
 *.tfstate.backup
+.DS_Store
