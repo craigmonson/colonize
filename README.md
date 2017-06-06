@@ -31,8 +31,8 @@ root.
 
 There is one, global `.colonize.yaml` file that configures _how_ clonize runs.
 This should be located in the root of your project.  Colonize will walk up the
-tree until it finds thi file, at which pint it'll assume that's the project
-root.  Environment configuration will be read through the branches up to the
+tree until it finds the file, at which point it'll assume that's the project
+root. Environment configuration will be read through the branches up to the
 root.
 
 #### Leaves vs Branches ####
