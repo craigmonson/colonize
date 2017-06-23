@@ -20,8 +20,6 @@ func Run(c *config.Config, l log.Logger, args interface{}) error {
 	} else {
 		l.Log("Running remote setup")
 		util.RunCmd("./" + c.CombinedRemoteFilePath)
-		l.Log("Disabling remote")
-		util.RunCmd("terraform", "remote", "config", "-disable")
 	}
 
 	l.Log("Executing terraform plan")
