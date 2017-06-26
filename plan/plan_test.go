@@ -35,10 +35,6 @@ var _ = Describe("Plan", func() {
 				Ω(um.MCmd.Cmd).To(MatchRegexp(conf.CombinedRemoteFilePath))
 			})
 
-			It("should disable remote once it's been pulled", func() {
-				Ω(um.MCmd.Cmd).To(MatchRegexp("terraform remote config -disable"))
-			})
-
 			It("should run the proper plan command", func() {
 				Ω(um.MCmd.Cmd).To(MatchRegexp(
 					"terraform plan -var-file " + conf.CombinedValsFilePath +
@@ -49,7 +45,6 @@ var _ = Describe("Plan", func() {
 
 			It("should log some stuff", func() {
 				Ω(mLog.Output).To(MatchRegexp("Running remote setup"))
-				Ω(mLog.Output).To(MatchRegexp("Disabling remote"))
 				Ω(mLog.Output).To(MatchRegexp("Executing terraform plan"))
 			})
 		})
@@ -67,7 +62,6 @@ var _ = Describe("Plan", func() {
 			It("should log that it's skipping the remote setup", func() {
 				Ω(mLog.Output).ToNot(MatchRegexp("Running remote setup"))
 				Ω(mLog.Output).To(MatchRegexp("Skipping remote setup"))
-				Ω(mLog.Output).ToNot(MatchRegexp("Disabling remote"))
 				Ω(mLog.Output).To(MatchRegexp("Executing terraform plan"))
 			})
 
