@@ -128,7 +128,7 @@ func findEnvSpecificTfFilesToCombine(c *config.Config) []string {
 	fileList, _ := ioutil.ReadDir(c.OriginPath)
 	// add environment specific files
 	for _, fPath := range fileList {
-		if m, _ := regexp.MatchString(`.*\.tf\.`+c.Environment, fPath.Name()); m {
+		if m, _ := regexp.MatchString(`.*\.tf\.`+c.Environment+`$`, fPath.Name()); m {
 			combineable = append(combineable, util.PathJoin(c.OriginPath, fPath.Name()))
 		}
 	}

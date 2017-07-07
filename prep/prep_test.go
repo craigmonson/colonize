@@ -27,7 +27,7 @@ var _ = Describe("Prep", func() {
 		_ = os.Remove(conf.CombinedTfFilePath)
 		_ = os.Remove(conf.CombinedDerivedVarsFilePath)
 		_ = os.Remove(conf.CombinedDerivedValsFilePath)
-		//_ = os.Remove(conf.CombinedRemoteFilePath)
+		_ = os.Remove(conf.CombinedRemoteFilePath)
 	})
 
 	Describe("Run", func() {
@@ -104,7 +104,6 @@ Fetching terraform modules...`
 				Ω(string(contents)).To(MatchRegexp(expected))
 			}
 		})
-
 		It("should have the right values contents", func() {
 			contents, _ := ioutil.ReadFile(conf.CombinedValsFilePath)
 			expected := `environment = "dev"
@@ -118,6 +117,11 @@ vpc_var = "dev_vpc_var"
 `
 			Ω(string(contents)).To(Equal(expected))
 		})
+		It("should not have wrong environment values contents", func() {
+			contents, _ := ioutil.ReadFile(conf.CombinedValsFilePath)
+			Ω(string(contents)).ToNot(MatchRegexp(`dev_foo_vpc_var`))
+		})
+
 	})
 
 	Describe("BuildCombinedTfFile", func() {
@@ -135,6 +139,11 @@ vpc_var = "dev_vpc_var"
 			contents, _ := ioutil.ReadFile(conf.CombinedTfFilePath)
 			expected := "provider \"aws\" {}\nvariable \"vpc_tf_test\" {}\n# test env file\n# test base file\n"
 			Ω(string(contents)).To(Equal(expected))
+		})
+
+		It("should NOT have the wrong contents", func() {
+			contents, _ := ioutil.ReadFile(conf.CombinedTfFilePath)
+			Ω(string(contents)).ToNot(Equal(`# test env foo file`))
 		})
 	})
 
