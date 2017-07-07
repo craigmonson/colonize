@@ -12,8 +12,33 @@ the ability to organize them in a defined manageable way.
 
 ## Install ##
 
-### setup via go ###
-### add .colonize.yaml to root of project ###
+### Download from releases ###
+
+The easiest way to get going with colonize is to download it from
+https://github.com/craigmonson/colonize/releases, unpack it and plop it into
+your path:
+
+```bash
+# grab the darwin version:
+%> curl https://github.com/craigmonson/colonize/releases/download/<version>/colonize-<version>.darwin-amd64.tar.gz > colonize.tar.gz
+# unpack it
+%> tar zxpvf colonize.tar.gz
+# mv to path
+%> mv colonize-<version>/colonize ~/bin/colonize
+# ensure it's executable
+%> chmod u+x ~/bin/colonize
+```
+
+### Install into your go setup ###
+
+You can also use the typical  ```go get``` functionality to grab the entire
+repo and install the executable, but you've got to have your golang environment
+set up:
+
+```bash
+# install via golang tools
+%> go install github.com/craigmonson/colonize
+```
 
 ## Quick Concepts ##
 
@@ -31,9 +56,9 @@ root.
 
 There is one, global `.colonize.yaml` file that configures _how_ clonize runs.
 This should be located in the root of your project.  Colonize will walk up the
-tree until it finds the file, at which point it'll assume that's the project
-root. Environment configuration will be read through the branches up to the
-root.
+tree until it finds the file, at which point it'll assume that it's found the
+project root. Environment configuration will be read through the branches up to
+the root.
 
 #### Leaves vs Branches ####
 
@@ -46,7 +71,7 @@ A Branch is just a pathway to a leaf.  These contain _NO_ functional terraform
 templates, and _ONLY_ contain configuration in the `env` directory.
 
 Colonize will utilize all of the configuration in each `env` directory, in each
-branch, from the root, to the leaf, when runnin colonize commands.  This would
+branch, from the root, to the leaf, when running colonize commands.  This would
 allow you to configure, say, an account variable in the root, and that account
 variable would be available to every template in the tree, without you having
 to cut and paste it into every template.
@@ -62,8 +87,8 @@ combined files when the terraform commands are executed.
 #### combined / generated files ####
 
 Colonize utilizes terraform, and the way terraform runs commands to provide
-environment specific configuration fo your functional templates.  It does this
-by combining files through the tree, and placing them in the workin directory
+environment specific configuration for your functional templates.  It does this
+by combining files through the tree, and placing them in the working directory
 of the currently executing template.  Those files are all prefixed with an
 underscore ("\_"), for example: `_combined_variables.tf`.
 
@@ -73,7 +98,6 @@ Colonize creates several variable, and assigns them values, automatically from
 the generated config of the project / tree.  You can also define your own
 derived variables to be used in your templates as well.  Unlike terraform,
 colonize allows you to create variables and values from already existing values.
-
 
 ## Configurable Files ##
 
@@ -97,7 +121,7 @@ Lets look a little deeper into each of these files.
 These are the driving environment spcific variable assignment files that will
 distinguish settings between your different environments in terraform.  Each
 environment is expected to map directly to a specific tfvars file.  I think it's
-best described through an example, so given the tree:
+best described through an example:
 
 ```bash
 test
@@ -114,7 +138,7 @@ using terraforms variables, and variable substitutions to create a more modular
 and reusable template.  Lets assume that web is spinning up a single instance,
 and we've got our instance size set to a variable:
 
-```
+```hcl
 # main.tf
 variable "size" {}
 resource "fake_instance", "fake" {
@@ -177,7 +201,7 @@ As in the example above, the different files have different values for the
 variable `size`.  Lets utilize that, and the `environment` varible that
 Colonize automatically generates for us.  So our derived file looks like:
 
-```bash
+```hcl
 tag_name = "web-${var.environment}-${var.size}"
 ```
 
@@ -206,10 +230,13 @@ leaf.
 
 ### remote\_setup.sh ###
 
+The remote\_setup.sh file is used to execute the terraform remote command to
+ensure the state is properly synced for your terraform runs.
+
 Colonize looks for only one remote\_setup.sh file in the roots config (`env`)
 directory.  Like the derived tfvars files above, this one also allows for
 variable interpolation.  Colonize will read in, do the variable substitutions,
-and write it out in the leaf directory to a file named `_remote_setup.sh`
+and write it out in the leaf directory to a file named `_remote_setup.sh`.
 The remote is used when colonize does it's thing with terraform, like plan,
 apply and destroy.
 
@@ -234,22 +261,49 @@ test
     ├── env
     │   ├── ...
     ├── main.tf
-    ├── creds.tf.base
+    ├── creds.tf.default
     ├── creds.tf.prod
     ├── db.tf.dev
 ```
 
 In the example above, we've got 4 terraform templates.  When we run the command:
 `colonize prep -environment=prod`, then Colonize will include `creds.tf.prod`,
-and *ONLY* `creds.tf.prod` into the `_combined.tf` file.
+and *ONLY* `creds.tf.prod` into the `_combined.tf` file.  Terraform will *still*
+use any \*.tf files on it's own, so any terraform commands (plan, apply etc) will
+use `main.tf` as well.
 
 If we, instead, run the command: `colonize prep -environment=dev`, then Colonize
-will include `creds.tf.base` AND `db.tf.dev` into the `_combined.tf` file.
+will include `creds.tf.default ` AND `db.tf.dev` into the `_combined.tf` file.  As
+before, terraform commands will utilize `main.tf` as well.
 
-Since terraform uses any files named with the `.tf` extension, when terraform
-commands are executed, it will use both `main.tf`, and `_combined.tf`.
+### build\_order.txt ###
 
-#### 4.  TBD: There must be a make\_order.txt file in order to use the branch make ####
+You can execute terraform commands on multiple leaves under a given branch, so
+long as you include a build\_order.txt file at the branch level.  This explicitly
+defines the order of the leaves to be executed in for the given command. Given
+the branch directory structure:
+
+```bash
+├── db
+├── mailer
+├── vpc
+├── web
+├── env
+```
+
+and a `build\_order.txt` file with the contents:
+```
+db
+web
+mailer
+```
+
+If you ran the command: `colonize prep -environment=dev`, colonize would
+execute `prep` first in db, followed by web, then finally by mailer.  The
+underlying directories can be either branches or leaves, and colonize will drop
+ito each and do the right thing as it moves along that particular branch:  Drop
+into directories that are branches, and execute `prep` on all the leaves it
+encounters along the way, honoring each `build\_order.txt` as it goes along.
 
 ## Execution ##
 
@@ -275,7 +329,7 @@ The **init** command runs an interactive process to help initialize your Coloniz
 project. It will ask a series of questions and provide defaults for building your
 `.colonize.yaml` file.
 
-The following is output is an example of the Colonize init command's interactive 
+The following output is an example of the Colonize init command's interactive 
 process. Each variable is provided with a default value, where entering nothing
 will result in accepting that variable's default.
 
@@ -294,8 +348,8 @@ Enter 'vals_file_env_post_string' [.tfvars]:
 ```
 
 After completing each variable, the init command will display each setting and
-prompt you for acceptance of the settings. After the settings have been accepted,
-a `.colonize.yaml` file will be created in the current directory, as well as the
+prompt you for acceptance. After the settings have been accepted, a
+`.colonize.yaml` file will be created in the current directory, as well as the
 selected `environments_dir`.
 
 
@@ -340,7 +394,7 @@ that you selected.
 The **prep** command is the workhorse of the colonize command.  It does all of
 the combining and tree walking to generate files that the installed terraform
 will utilize in it's plan / apply / destroy runs.  As one would expect, this
-prepares terraform for the given environment ```<env>```
+prepares terraform for the given environment `<env>`
 
 All of the generated files are prepended with the underscore ("\_"), so should
 be easily identifiable upon completion of the execution.
@@ -421,12 +475,9 @@ myapp
 
 #### ```colonize generate leaf <name>```
 
-The branch generation sub-command is used to generate a Colonize branch, including
-build order file, environment directory, environment tfvars, and optionally a list
-of leafs underneath the branch. When using the `generate branch` command with the
-`--leafs` option, this command is internally called for each leaf.
-
-The following command
+The leaf generation sub-command is used to generate a Colonize leaf, including
+environment directory, environment tfvars, and will append to the build order
+file. Given we are in the mybranch directory, the following command:
 
 `$ colonize generate leaf myleaf`
 
@@ -439,9 +490,12 @@ mybranch
     └── main.tf
 ```
 
+... and `build\_order.txt` will have the single `myleaf` line added to it.
+
 
 ## CHANGELOG ##
 
+  * 0.1.0-alpha - initial release.
   * 0.0.0 - still in development.
 
 ## CONTRIBUTORS ##

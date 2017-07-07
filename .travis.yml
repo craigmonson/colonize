@@ -1,5 +1,8 @@
 language: go
 
+go:
+  - 1.8.x
+
 before_install:
   - go get github.com/onsi/gomega
   - go get github.com/onsi/ginkgo/ginkgo
