@@ -9,7 +9,7 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of Colonize",
 	Long:  `Retrieve the version information for Colonize`,
 	Run: func(cmd *cobra.Command, args []string) {
-		Log.Log("Colonize v0.1.0-alpha")
+		Log.Log("Colonize v0.1.1-alpha")
 	},
 }
 
