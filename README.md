@@ -494,7 +494,7 @@ mybranch
 
 
 ## CHANGELOG ##
-
+  * 0.1.1-alpha - bugfix release.
   * 0.1.0-alpha - initial release.
   * 0.0.0 - still in development.
 
